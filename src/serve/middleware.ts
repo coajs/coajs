@@ -1,0 +1,23 @@
+import * as Koa from 'koa'
+import * as koaBodyParser from 'koa-bodyparser'
+import * as koaMorgan from 'koa-morgan'
+import * as koaStatic from 'koa-static'
+import { action, env } from '..'
+import context from './context'
+import lib from './lib'
+import response from './response'
+
+export default (koa: Koa) => {
+  koa.proxy = true
+  koa.use(koaStatic('static'))
+  koa.use(koaMorgan(env.isDev ? 'dev' : 'combined'))
+  koa.use(koaBodyParser({ enableTypes: ['json', 'form', 'text'], extendTypes: { text: ['text/xml'] } }))
+
+  koa.use(response())
+  koa.use(action.routes())
+  lib.extend(koa.context, context)
+
+  try {
+    lib.extend(koa.context, require('context').default)
+  } catch (e) {}
+}

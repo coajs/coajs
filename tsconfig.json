@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "commonjs",
+    "target": "esnext",
+    "outDir": "dist",
+    "sourceMap": true,
+    "importHelpers": true,
+    "incremental": true,
+    "removeComments": true,
+    "declaration": true
+  },
+  "include": [
+    "src"
+  ]
+}
