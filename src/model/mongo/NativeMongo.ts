@@ -1,5 +1,5 @@
 import { Collection, Db, FilterQuery } from 'mongodb'
-import { _, Dic, mongo } from '../..'
+import { _, Dic, mongo, uuid } from '../..'
 import lib, { TPOParam, TSchemeId, TSortParam } from './lib'
 
 export class NativeMongo<Scheme> {
@@ -19,7 +19,7 @@ export class NativeMongo<Scheme> {
 
   async insert (data: Partial<Scheme>) {
     const time = _.now()
-    const _id = (data as any)[this.key] || lib.newId()
+    const _id = (data as any)[this.key] || await this.newId()
     const value = _.extend({ _id, [this.key]: _id, created: time, updated: time }, data)
 
     const result = await this.collection.insertOne(value)
@@ -28,10 +28,12 @@ export class NativeMongo<Scheme> {
 
   async mInsert (dataList: Partial<Scheme>[]) {
     const time = _.now()
-    const values = _.map(dataList, v => {
-      const _id = (v as any)[this.key] || lib.newId()
-      return _.extend({ _id, [this.key]: _id, created: time, updated: time }, v)
-    })
+    const values = [] as any[]
+    for (const i in dataList) {
+      const data = dataList[i] as any
+      const _id = data[this.key] || await this.newId()
+      values.push(_.extend({ _id, [this.key]: _id, created: time, updated: time }, data))
+    }
 
     const result = await this.collection.insertMany(values)
     return _.values(result.insertedIds) as unknown as string[]
@@ -87,6 +89,10 @@ export class NativeMongo<Scheme> {
 
   protected async count (filter: FilterQuery<Scheme> = {}) {
     return await this.collection.countDocuments(filter)
+  }
+
+  protected async newId () {
+    return await uuid.hexId()
   }
 
   private fill (data: any, po: TPOParam = {}) {

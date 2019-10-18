@@ -1,14 +1,10 @@
-import { _, Dic, uuid } from '../..'
+import { _, Dic } from '../..'
 
 export declare type TPOParam = { pick?: string[], omit?: string[] }
 export declare type TSortParam = (string | 1 | -1)[][] | Dic<1 | -1>
 export declare type TSchemeId = { _id: string, created: number, updated: string }
 
 export default new class {
-  async newId () {
-    return await uuid.hexId()
-  }
-
   po2project (po: TPOParam = {}, key: string = '') {
     const project = {} as Dic<1 | 0>, pick = po.pick || [], omit = po.omit || []
     if (pick.length) {
