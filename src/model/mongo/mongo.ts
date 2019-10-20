@@ -1,12 +1,12 @@
 import { Db, MongoClient } from 'mongodb'
-import { env } from '../../index'
+import { die, env } from '../../index'
 
 export default new class {
 
   private mongoDb = {} as Db
 
   get () {
-    return this.mongoDb
+    return this.mongoDb || die.error('还未初始化，不能调用')
   }
 
   async init () {

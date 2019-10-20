@@ -4,17 +4,28 @@ import lib, { TPOParam, TSchemeId, TSortParam } from './lib'
 
 export class NativeMongo<Scheme> {
 
-  protected collection: Collection<Partial<Scheme> | TSchemeId>
-  protected mongoDb: Db
-
   private readonly key: string
+  private readonly name: string
   private readonly scheme: Scheme
 
   constructor (name: string, option: { key?: string, scheme: Scheme }) {
     this.key = option.key || _.camelCase(name) + 'Id'
     this.scheme = option.scheme
-    this.mongoDb = mongo.get()
-    this.collection = this.mongoDb.collection(_.snakeCase(name))
+    this.name = name
+  }
+
+  private _db: any
+
+  protected get db (): Db {
+    if (!this._db) this._db = mongo.get()
+    return this._db
+  }
+
+  private _collection: any
+
+  protected get collection (): Collection<Partial<Scheme> | TSchemeId> {
+    if (!this._collection) this._collection = this.db.collection(_.snakeCase(this.name))
+    return this._collection
   }
 
   async insert (data: Partial<Scheme>) {
@@ -75,7 +86,7 @@ export class NativeMongo<Scheme> {
   }
 
   protected async list (option: { filter?: FilterQuery<Scheme>, sort?: TSortParam, po?: TPOParam } = {}) {
-    const sort = option.sort || { _id: -1 }
+    const sort = option.sort || { created: -1 }
     const result = [] as Scheme[]
     await this.collection.find(option.filter).sort(sort).project(lib.po2project(option.po))
       .forEach(v => result.push(this.fill(v, option.po) as any))
