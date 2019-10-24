@@ -7,12 +7,12 @@ declare type TWorker = (ids: string[]) => Promise<TWorkData>
 export default new class {
 
   // 扩展数据
-  async extend (list: TList, worker: TWorker, key: string, extendKey: string, defaultValue = {}) {
+  async extend (list: TList, worker: TWorker, key: string, extend: string, value = {}) {
 
     // 获取需要的ID列表
     const ids = [] as string[]
     _.forEach(list, v => {
-      if (v && v[key]) ids.push(v[key])
+      v && v[key] && ids.push(v[key])
     })
 
     // 如果数据不存在，直接返回
@@ -25,8 +25,8 @@ export default new class {
     // 遍历数据，将数据附加到list
     _.forEach(list, v => {
       if (v && v[key]) {
-        const newData = data[v[key]] || defaultValue
-        if (extendKey) v[extendKey] = newData
+        const newData = data[v[key]] || value
+        if (extend) v[extend] = newData
         else _.extend(v, newData)
       }
     })
@@ -36,7 +36,7 @@ export default new class {
   }
 
   // 扩展数组数据数据
-  async extendArray (list: TList, worker: TWorker, dataKey: string, extendKey: string, defaultValue = {}) {
+  async extendArray (list: TList, worker: TWorker, dataKey: string, extend: string, value = {}) {
 
     // 获取需要的ID列表
     const ids = [] as string[]
@@ -55,8 +55,8 @@ export default new class {
     // 遍历数据，将数据附加到list
     _.forEach(list, v => {
       if (v && v[dataKey] && v[dataKey].length) {
-        const newArray = _.map(v[dataKey], v => data[v] || defaultValue)
-        if (extendKey) v[extendKey] = newArray
+        const newArray = _.map(v[dataKey], v => data[v] || value)
+        if (extend) v[extend] = newArray
         else v[dataKey] = newArray
       }
     })

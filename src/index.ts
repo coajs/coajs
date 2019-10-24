@@ -6,8 +6,9 @@ export * from './typings'
 // 常用工具
 import * as _ from 'lodash'
 import * as moment from 'moment'
+import $ from './helper'
 
-export { _, moment }
+export { _, $, moment }
 
 // serve相关
 export { default as serve } from './serve'

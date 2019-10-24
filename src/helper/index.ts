@@ -6,10 +6,10 @@ export default new class {
   try<T> (work: () => T) {
     try {
       return work()
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
+  // 判断是否在数组中
   inArray (list: any[], value: any) {
     return _.indexOf(list, value) > -1
   }
@@ -40,9 +40,7 @@ export default new class {
   // 延迟执行函数
   async timeout (ms: number = 0) {
     return new Promise(resolve => {
-      setTimeout(() => {
-        resolve()
-      }, ms)
+      setTimeout(() => resolve(), ms)
     })
   }
 
@@ -75,27 +73,14 @@ export default new class {
 
   // 异步遍历循环
   async asyncEach (list: any, callback: (item: any, key: string | number) => void) {
-    for (let i in list) {
-      if (list.hasOwnProperty(i)) {
+    for (let i in list)
+      if (list.hasOwnProperty(i))
         await callback(list[i], i)
-      }
-    }
   }
 
   // 时间日期格式化
-  dateTimeFormat (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
+  dateTime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
     // http://momentjs.com/docs/#/displaying/
     return moment(time || new Date()).format(format)
-  }
-
-  // 转换为驼峰写法
-  toHump (name: string) {
-    return name.replace(/_(\w)/g, (s, letter) => letter.toUpperCase())
-  }
-
-  // 转换为下划线写法
-  toLine (name: string) {
-    // return _.lowerFirst(name).replace(/([A-Z])/g, '_$1').toLowerCase();
-    return name.replace(/([A-Z])/g, (s, letter) => '_' + letter.toLowerCase())
   }
 }
