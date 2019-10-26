@@ -1,4 +1,4 @@
-import { Collection, Db, FilterQuery, FindOneOptions, UpdateOneOptions, UpdateQuery } from 'mongodb'
+import { ClientSession, Collection, Db, FilterQuery, FindOneOptions, UpdateOneOptions, UpdateQuery } from 'mongodb'
 import { _, Dic, mongo, uuid } from '../..'
 
 export declare type TSort = Dic<number>
@@ -85,6 +85,10 @@ export class NativeMongo<Scheme> {
     await this.collection.find({ _id: { $in: ids } }, options)
       .forEach(v => result[(v as any)[this.key]] = this.result(v, pick))
     return result
+  }
+
+  async drop (options?: { session: ClientSession }) {
+    return await this.collection.drop(options)
   }
 
   protected async findIdList (query: FilterQuery<Scheme>, sort: TSort = {}, options: FindOneOptions = {}) {
