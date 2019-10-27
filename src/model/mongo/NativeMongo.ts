@@ -35,7 +35,7 @@ export class NativeMongo<Scheme> {
 
   private _collection: any
 
-  protected get collection (): Collection<Partial<Scheme> | TSchemeExt> {
+  protected get collection (): Collection<Partial<Scheme | TSchemeExt>> {
     if (!this._collection)
       this._collection = this.db.collection(_.snakeCase(this.name))
     return this._collection
@@ -76,14 +76,14 @@ export class NativeMongo<Scheme> {
   async getById (id: string, pick = this.columns, options: FindOneOptions = {}) {
     options.projection = this.projection(pick)
     const result = await this.collection.findOne({ _id: id }, options)
-    return this.result(result, pick)
+    return this.result(result, pick) || null
   }
 
   async mGetByIds (ids: string[], pick = this.pick, options: FindOneOptions = {}) {
     const result = {} as Dic<Scheme>
     options.projection = this.projection(pick)
     await this.collection.find({ _id: { $in: ids } }, options)
-      .forEach(v => result[(v as any)[this.key]] = this.result(v, pick))
+      .forEach(v => result[(v as any)[this.key]] = this.result(v, pick) as Scheme)
     return result
   }
 
@@ -100,7 +100,7 @@ export class NativeMongo<Scheme> {
     return result
   }
 
-  protected async findList (query: FilterQuery<Scheme>, pick = this.columns, sort: TSort = {}, options: FindOneOptions = {}) {
+  protected async findList (query: FilterQuery<Scheme>, pick = this.pick, sort: TSort = {}, options: FindOneOptions = {}) {
     const result = [] as Scheme[]
     options.projection = this.projection(pick)
     _.defaults(sort, { created: -1 })
@@ -123,15 +123,17 @@ export class NativeMongo<Scheme> {
     return await uuid.hexId()
   }
 
-  private projection (pick: string[]) {
+  protected result (data: any, pick: string[]) {
+    if (data === null || data === undefined)
+      return null
+    _.defaultsDeep(data, this.scheme)
+    return _.pick(data, pick) as Scheme
+  }
+
+  protected projection (pick: string[]) {
     const result = { _id: 0, [this.key]: 1 }
     _.forEach(pick, v => result[v] = 1)
     return result
-  }
-
-  private result (data: any, pick: string[]) {
-    _.defaultsDeep(data, this.scheme)
-    return _.pick(data, pick) as Scheme
   }
 
 }
