@@ -1,6 +1,6 @@
 {
   "name": "coajs",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -18,7 +18,9 @@
     "colors": "^1.4.0",
     "fast-glob": "^3.1.0",
     "hashids": "1",
-    "koa": "^2.10.0",
+    "ioredis": "^4.14.1",
+    "knex": "^0.20.1",
+    "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.4.0",
@@ -26,12 +28,12 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongodb": "^3.3.3",
-    "source-map-support": "^0.5.12",
+    "mysql": "^2.17.1",
+    "source-map-support": "^0.5.16",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@types/hashids": "^1.0.30",
-    "coajs-types": "^1.0.1",
+    "coajs-types": "^1.0.2",
     "tsc-watch": "^4.0.0",
     "typescript": "^3.6.4"
   }

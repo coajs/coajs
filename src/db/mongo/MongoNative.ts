@@ -4,7 +4,7 @@ import { _, Dic, mongo, uuid } from '../..'
 export declare type TSort = Dic<number>
 export declare type TSchemeExt = { _id: string, created: number, updated: number }
 
-export class NativeMongo<Scheme> {
+export class MongoNative<Scheme> {
 
   private readonly key: string
   private readonly name: string

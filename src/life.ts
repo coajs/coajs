@@ -6,6 +6,5 @@ export default {
     await uuid.init()
   },
   async started () {
-
   }
 }

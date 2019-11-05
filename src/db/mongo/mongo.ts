@@ -1,5 +1,5 @@
 import { Db, MongoClient } from 'mongodb'
-import { die, env } from '../../index'
+import { die, env } from '../..'
 
 export default new class {
 
@@ -11,6 +11,8 @@ export default new class {
 
   async init () {
     const host = env.mongo.host
+    if (!host) return
+
     const port = env.mongo.port
     const database = env.mongo.database
     const username = encodeURIComponent(env.mongo.username)
