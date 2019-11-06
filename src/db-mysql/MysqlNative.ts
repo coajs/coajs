@@ -1,5 +1,5 @@
 import * as knex from 'knex'
-import { _, Dic, uuid } from '../..'
+import { _, Dic, uuid } from '..'
 import mysql from './mysql'
 
 export type SafePartial<T> = T extends {} ? Partial<T> : any

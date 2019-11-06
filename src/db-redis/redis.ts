@@ -1,5 +1,5 @@
 import * as Redis from 'ioredis'
-import { echo, env } from '../..'
+import { echo, env } from '..'
 
 const redis = new Redis({
   port: env.redis.port,

@@ -1,5 +1,5 @@
 import { ClientSession, Collection, Db, FilterQuery, FindOneOptions, UpdateOneOptions, UpdateQuery } from 'mongodb'
-import { _, Dic, mongo, uuid } from '../..'
+import { _, Dic, mongo, uuid } from '..'
 
 export declare type TSort = Dic<number>
 export declare type TSchemeExt = { _id: string, created: number, updated: number }

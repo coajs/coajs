@@ -1,7 +1,7 @@
 export * from './action/typings'
 export * from './serve/typings'
 export * from './env/typings'
-export { SafePartial, Query, Transaction, Page } from './db/mysql/MysqlNative'
+export { SafePartial, Query, Transaction, Page } from './db-mysql/MysqlNative'
 
 declare type Basic = string | number | boolean | null | Date | undefined
 

@@ -1,10 +1,11 @@
 import * as Knex from 'knex'
-import { die, echo, env } from '../..'
+import { die, echo, env } from '..'
 
 const mysql = Knex({
   client: 'mysql',
   connection: {
     host: env.mysql.host,
+    port: env.mysql.port,
     user: env.mysql.user,
     password: env.mysql.password,
     database: env.mysql.database,

@@ -1,4 +1,4 @@
-import { _, Dic, die, env } from '../..'
+import { _, Dic, die, env } from '..'
 import redis from './redis'
 
 const ms_ttl = 30 * 24 * 3600 * 1000

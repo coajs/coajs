@@ -1,5 +1,5 @@
 import { Db, MongoClient } from 'mongodb'
-import { die, env } from '../..'
+import { die, env } from '..'
 
 export default new class {
 
