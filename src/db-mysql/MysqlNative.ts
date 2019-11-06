@@ -6,6 +6,7 @@ export type SafePartial<T> = T extends {} ? Partial<T> : any
 export type Query = (qb: knex.QueryBuilder) => void
 export type Transaction = knex.Transaction
 export type Page = { rows: number, last: number }
+export type ModelOption<T> = { key?: string, scheme: T, pick: string[], unpick?: string[], indexes?: string[] }
 
 const DefaultPageRows = 20
 const MaxPageRows = 1000
@@ -20,9 +21,8 @@ export class MysqlNative<Scheme> {
   protected readonly columns = [] as string[]
   protected readonly jsons = [] as string[]
 
-  constructor (name: string, option: { key?: string, scheme: Scheme, pick: string[], unpick?: string[], indexes?: string[] }) {
+  constructor (name: string, option: ModelOption<Scheme>) {
     // 处理基本数据
-    this.key = option.key || _.camelCase(name) + 'Id'
     this.scheme = option.scheme
     this.name = _.snakeCase(name)
     this.pick = option.pick
@@ -35,6 +35,7 @@ export class MysqlNative<Scheme> {
       if (typeof v === 'object') this.jsons.push(k)
       this.columns.push(k)
     })
+    this.key = option.key || this.columns[0]
   }
 
   private static checkPage (page: Page) {
@@ -125,7 +126,7 @@ export class MysqlNative<Scheme> {
   protected async selectIdList (query: Query, trx?: Transaction) {
     const qb = this.table(trx).select([this.key])
     query(qb)
-    return await qb as { id: string }[]
+    return await qb as Scheme[]
   }
 
   protected async selectIdPageList (page: Page, query: Query, trx?: Transaction) {
@@ -135,7 +136,7 @@ export class MysqlNative<Scheme> {
     const qb = this.table(trx).select([this.key])
     qb.limit(rows + 1).offset(last)
     query(qb)
-    const list = await qb as { id: string }[]
+    const list = await qb as Scheme[]
 
     if (list.length === rows + 1) {
       list.pop()
@@ -145,6 +146,12 @@ export class MysqlNative<Scheme> {
     last = last + rows
 
     return { list, page: { last, more, rows } }
+  }
+
+  protected async selectFirst (query: Query, pick = this.pick, trx?: Transaction) {
+    const qb = this.table(trx).select(pick)
+    query(qb)
+    return await qb.first() as Scheme | null
   }
 
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
