@@ -1,10 +1,11 @@
 import HashIds from 'hashids'
-import { uuid } from '..'
-import bin from './bin'
+import { _, uuid } from '..'
+import binMysql from './binMysql'
 
 const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 const store = { key1: 0, key2: 0, key3: 0, lock: false }
+const nspDuration = 24 * 3600 * 1000, maxIndex = 9990
 
 export default new class {
 
@@ -13,22 +14,22 @@ export default new class {
     if (store.lock)
       return
     store.lock = true
-    const [key1, key2] = await bin.newSaltInfo()
+    const [key1, key2, key3] = await this.newKeys()
     store.key1 = key1
     store.key2 = key2
-    store.key3 = 0
+    store.key3 = key3
     store.lock = false
   }
 
   async series (nsp: string) {
-    return await bin.newNo(nsp)
+    return await this.newNo(nsp)
   }
 
   async saltId () {
     // 预保存数据
     const result = [store.key1, store.key1, ++store.key3]
     // 某些时机下会异步更新
-    if (store.key3 > bin.maxIndex || store.key1 !== bin.getKey1()) {
+    if (store.key3 > maxIndex || store.key1 !== this.getKey1()) {
       uuid.init().then()
     }
     // 返回结果
@@ -43,6 +44,26 @@ export default new class {
   async hashId () {
     const saltId = await this.saltId()
     return hashIds.encode(saltId)
+  }
+
+  protected getKey1 () {
+    return _.toInteger(_.now() / nspDuration)
+  }
+
+  private async newKeys () {
+    const key1 = this.getKey1()
+    const key2 = await this.newNo(key1.toString())
+    if (key2 === 1)
+      await this.clearNo((key1 - 3).toString())
+    return [key1, key2, 0]
+  }
+
+  private async newNo (key1: string) {
+    return await binMysql.newNo(key1)
+  }
+
+  private async clearNo (key1: string) {
+    await binMysql.clearNo(key1)
   }
 
 }
