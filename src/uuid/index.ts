@@ -5,7 +5,7 @@ import binMysql from './binMysql'
 const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 const store = { key1: 0, key2: 0, key3: 0, lock: false }
-const nspDuration = 24 * 3600 * 1000, maxIndex = 9990
+const nspDuration = 24 * 3600 * 1000, nspId = 'ID:', maxIndex = 9990
 
 export default new class {
 
@@ -22,7 +22,7 @@ export default new class {
   }
 
   async series (nsp: string) {
-    return await this.newNo(nsp)
+    return await binMysql.newNo(nsp)
   }
 
   async saltId () {
@@ -52,18 +52,18 @@ export default new class {
 
   private async newKeys () {
     const key1 = this.getKey1()
-    const key2 = await this.newNo(key1.toString())
+    const key2 = await this.newNo(key1)
     if (key2 === 1)
-      await this.clearNo((key1 - 3).toString())
+      await this.clearNo(key1 - 3)
     return [key1, key2, 0]
   }
 
-  private async newNo (key1: string) {
-    return await binMysql.newNo(key1)
+  private async newNo (key1: number) {
+    return await binMysql.newNo(nspId + key1)
   }
 
-  private async clearNo (key1: string) {
-    await binMysql.clearNo(key1)
+  private async clearNo (key1: number) {
+    await binMysql.clearNo(nspId + key1)
   }
 
 }

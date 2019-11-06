@@ -187,11 +187,13 @@ export class MysqlNative<Scheme> {
 
   protected fill<T> (data: T, insert = false) {
     const result = data as any
+    // 当为insert的时候填满数据
+    insert && _.defaults(data, this.scheme)
+    // 处理json
     this.jsons.forEach(k => {
-      if (result.hasOwnProperty(k) && typeof result[k] === 'object')
+      if (typeof result[k] === 'object')
         result[k] = JSON.stringify(result[k])
     })
-    insert && _.defaultsDeep(data, this.scheme)
     return result as T
   }
 }
