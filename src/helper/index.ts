@@ -79,7 +79,7 @@ export default new class {
   }
 
   // 时间日期格式化
-  dateTime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
+  datetime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
     // http://momentjs.com/docs/#/displaying/
     return moment(time || new Date()).format(format)
   }

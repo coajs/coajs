@@ -1,6 +1,5 @@
 import * as knex from 'knex'
-import { _, Dic, uuid } from '..'
-import mysql from './mysql'
+import { _, Dic, mysql, uuid } from '..'
 
 export type SafePartial<T> = T extends {} ? Partial<T> : any
 export type Query = (qb: knex.QueryBuilder) => void
@@ -50,7 +49,7 @@ export class MysqlNative<Scheme> {
     const time = _.now()
     const id = (data as any)[this.key] as string || await this.newId()
     const value = { [this.key]: id, created: time, updated: time, ...data }
-    await this.table(trx).insert(this.fill(value))
+    await this.table(trx).insert(this.fill(value, true))
     return id
   }
 
@@ -62,7 +61,7 @@ export class MysqlNative<Scheme> {
       const data = dataList[i] as any
       const id = data[this.key] || await this.newId()
       const value = { [this.key]: id, created: time, updated: time, ...data }
-      values.push(this.fill(value))
+      values.push(this.fill(value, true))
       ids.push(id)
     }
     await this.table(trx).insert(values)
@@ -71,14 +70,14 @@ export class MysqlNative<Scheme> {
 
   async updateById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
-    const result = await this.table(trx).where({ [this.key]: id }).update(data)
+    const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     return result || 0
   }
 
   async upsertById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
     const time = _.now()
     _.defaults(data, { updated: time })
-    const result = await this.table(trx).where({ [this.key]: id }).update(data)
+    const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     if (result === 0) {
       _.defaults(data, { [this.key]: id, created: time })
       await this.table(trx).insert(data)
@@ -186,12 +185,13 @@ export class MysqlNative<Scheme> {
     return result as Scheme
   }
 
-  protected fill<T> (data: T) {
+  protected fill<T> (data: T, insert = false) {
     const result = data as any
-    _.defaultsDeep(data, this.scheme)
     this.jsons.forEach(k => {
-      if (result[k]) result[k] = JSON.stringify(result[k])
+      if (result.hasOwnProperty(k) && typeof result[k] === 'object')
+        result[k] = JSON.stringify(result[k])
     })
+    insert && _.defaultsDeep(data, this.scheme)
     return result as T
   }
 }

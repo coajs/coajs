@@ -1,4 +1,4 @@
-import { _, cache, DataSet, echo, secure } from '..'
+import { _, cache, DataSet, secure } from '..'
 import { MysqlNative, Page, Query, SafePartial, Transaction } from './MysqlNative'
 
 export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
@@ -39,7 +39,6 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
   }
 
   async getById (id: string, pick = this.columns, trx?: Transaction, ms?: number) {
-    echo.log('getById columns', this.columns, pick)
     const result = await cache.warp(this.cacheNsp('id'), id, () => super.getById(id, this.columns, trx), ms)
     return this.pickResult(result, pick)
   }
