@@ -27,7 +27,7 @@ export default new class {
 
   async saltId () {
     // 预保存数据
-    const result = [store.key1, store.key1, ++store.key3]
+    const result = [store.key1, store.key2, ++store.key3]
     // 某些时机下会异步更新
     if (store.key3 > maxIndex || store.key1 !== this.getKey1()) {
       uuid.init().then()
