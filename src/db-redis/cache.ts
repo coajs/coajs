@@ -112,7 +112,7 @@ export default new class {
   // 清空缓存
   async clear (nsp: string = '*') {
     const keys = await redis.keys(this.key(nsp))
-    await redis.del(...keys)
+    return await redis.del(...keys)
   }
 
   // 设置nsp

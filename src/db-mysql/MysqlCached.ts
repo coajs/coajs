@@ -92,7 +92,10 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
 
   protected cacheFinger (data: DataSet) {
     let arr = [] as string[]
-    _.forEach(data, (v, k) => arr.push(k + '=' + v))
+    _.forEach(data, (v, k) => {
+      if (typeof v === 'object') v = JSON.stringify(v)
+      arr.push(k + '=' + v)
+    })
     arr = arr.sort()
     return secure.sha1(arr.join('&'))
   }
