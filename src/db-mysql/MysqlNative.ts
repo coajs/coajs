@@ -1,5 +1,5 @@
 import * as knex from 'knex'
-import { _, Dic, mysql, uuid } from '..'
+import { _, Dic, echo, mysql, uuid } from '..'
 
 export type SafePartial<T> = T extends {} ? Partial<T> : any
 export type Query = (qb: knex.QueryBuilder) => void
@@ -49,7 +49,9 @@ export class MysqlNative<Scheme> {
     const time = _.now()
     const id = (data as any)[this.key] as string || await this.newId()
     const value = { [this.key]: id, created: time, updated: time, ...data }
-    await this.table(trx).insert(this.fill(value, true))
+    const a = await mysql(this.name).insert(this.fill(value, true))
+    echo.log('a', a)
+
     return id
   }
 
@@ -71,6 +73,14 @@ export class MysqlNative<Scheme> {
   async updateById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
     const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
+    return result || 0
+  }
+
+  async updateByIdQuery (id: string, query: Query, data: SafePartial<Scheme>, trx?: Transaction) {
+    _.defaults(data, { updated: _.now() })
+    const qb = this.table(trx).where({ [this.key]: id })
+    query(qb)
+    const result = await qb.update(this.fill(data))
     return result || 0
   }
 

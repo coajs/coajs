@@ -1,7 +1,6 @@
 import * as crypto from 'crypto'
 import { BinaryLike, createHash, createHmac, HexBase64BinaryEncoding, HexBase64Latin1Encoding, Utf8AsciiBinaryEncoding } from 'crypto'
-import { _ } from '..'
-import { DataSet } from '../typings'
+import { _, DataSet } from '..'
 
 export default new class {
 

@@ -14,17 +14,12 @@ const mysql = Knex({
   debug: env.mysql.debug || false,
 })
 
-mysql.on('query-error', function (error: any) {
-  if (env.debug) {
-    echo.error(error)
-  }
-  if (error.sqlMessage)
-    die.error(error.sqlMessage, 400, error.errno + ': ' + error.code)
-  else
-    die.error(error.toString())
+mysql.on('query-error', (error: any) => {
+  echo.error(error)
+  die.hint(error.sqlMessage, 400, error.errno + ': ' + error.code)
 })
 
-env.mysql.trace && mysql.on('query', function (data: any) {
+env.mysql.trace && mysql.on('query', (data: any) => {
   echo.grey('* SQL: %s', mysql.raw(data.sql, data.bindings).toString())
 })
 

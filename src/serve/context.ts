@@ -1,5 +1,4 @@
-import { _, DataSet, echo, helper, secure } from '..'
-import { IContext } from './typings'
+import { _, DataSet, echo, helper, IContext, secure } from '..'
 
 export default {
 
