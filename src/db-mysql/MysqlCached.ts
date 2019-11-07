@@ -90,14 +90,22 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     return this.name + ':' + nsp
   }
 
-  protected cacheFinger (data: DataSet) {
-    let arr = [] as string[]
-    _.forEach(data, (v, k) => {
-      if (typeof v === 'object') v = JSON.stringify(v)
-      arr.push(k + '=' + v)
+  protected cacheFinger (data: DataSet, ...data2: DataSet[]) {
+    let arr1 = [] as string[], arr2 = [] as string[]
+    _.forEach(_.pickBy(data), (v, k) => {
+      const val = typeof v === 'object' ? JSON.stringify(v) : v
+      arr1.push(k + '=' + val)
     })
-    arr = arr.sort()
-    return secure.sha1(arr.join('&'))
+    arr1 = arr1.sort()
+    _.forEach(data2, data => {
+      _.forEach(_.pickBy(data), (v, k) => {
+        const val = typeof v === 'object' ? JSON.stringify(v) : v
+        arr2.push(k + '=' + val)
+      })
+    })
+    arr2 = arr2.sort()
+    const str = arr1.join('&') + '&' + arr2.join('&')
+    return secure.sha1(str)
   }
 
   private async cacheChangeDataList (ids: string[], data?: SafePartial<Scheme>, trx?: Transaction) {
