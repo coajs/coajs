@@ -1,5 +1,5 @@
 import * as knex from 'knex'
-import { _, Dic, echo, mysql, uuid } from '..'
+import { _, Dic, mysql, uuid } from '..'
 
 export type SafePartial<T> = T extends {} ? Partial<T> : any
 export type Query = (qb: knex.QueryBuilder) => void
@@ -49,9 +49,7 @@ export class MysqlNative<Scheme> {
     const time = _.now()
     const id = (data as any)[this.key] as string || await this.newId()
     const value = { [this.key]: id, created: time, updated: time, ...data }
-    const a = await mysql(this.name).insert(this.fill(value, true))
-    echo.log('a', a)
-
+    await mysql(this.name).insert(this.fill(value, true))
     return id
   }
 
@@ -135,6 +133,7 @@ export class MysqlNative<Scheme> {
   protected async selectIdList (query: Query, trx?: Transaction) {
     const qb = this.table(trx).select([this.key])
     query(qb)
+    qb.orderBy('id', 'desc')
     return await qb as Scheme[]
   }
 
@@ -143,8 +142,9 @@ export class MysqlNative<Scheme> {
     let { last, rows, more } = MysqlNative.checkPage(page)
 
     const qb = this.table(trx).select([this.key])
-    qb.limit(rows + 1).offset(last)
     query(qb)
+    qb.limit(rows + 1).offset(last)
+    qb.orderBy('id', 'desc')
     const list = await qb as Scheme[]
 
     if (list.length === rows + 1) {
@@ -160,12 +160,14 @@ export class MysqlNative<Scheme> {
   protected async selectFirst (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
+    qb.orderBy('id', 'desc')
     return await qb.first() as Scheme | null
   }
 
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
+    qb.orderBy('id', 'desc')
     return await qb as Scheme[]
   }
 
