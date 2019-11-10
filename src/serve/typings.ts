@@ -1,11 +1,18 @@
 import * as Koa from 'koa'
-import ContextExtend from './context'
+import contextExtend from './context'
 
-declare type TContextExtend = typeof ContextExtend;
+declare type ContextExtend = typeof contextExtend;
 
-export interface IContext extends TContextExtend, Koa.Context {}
+declare module "koa" {
+  interface Request {
+    body?: any;
+    rawBody: string;
+  }
+}
 
-export interface IContextExt extends IContext {}
+export interface Context extends ContextExtend, Koa.Context {}
+
+export interface ContextExt extends Context {}
 
 
 

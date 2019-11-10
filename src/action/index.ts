@@ -1,5 +1,5 @@
 import * as fg from 'fast-glob'
-import { _, Dic, IAction } from '..'
+import { _, Dic, Action } from '..'
 import docs from './docs'
 import route from './route'
 import html from './tpl/html'
@@ -11,7 +11,7 @@ const actions = () => {
 
   _.forEach(files, filename => {
 
-    const file = require(filename).default as IAction
+    const file = require(filename).default as Action
     const group = filename.replace(/apps\/(.*?)\/.*/, '$1')
 
     // 遍历当前action下所有的路由

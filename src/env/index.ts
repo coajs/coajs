@@ -1,4 +1,4 @@
-import { _, IEnv } from '..'
+import { _, Env } from '..'
 import initEnv from './init'
 import initExtend from './initExtend'
 
@@ -11,4 +11,4 @@ try {
   envEnv = require('env/' + initEnv.runEnv).default
 } catch (e) {}
 
-export default _.defaultsDeep(envEnv, defaultEnv, initExtend, initEnv) as IEnv
+export default _.defaultsDeep(envEnv, defaultEnv, initExtend, initEnv) as Env

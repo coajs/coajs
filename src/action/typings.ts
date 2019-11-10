@@ -1,6 +1,6 @@
-import { IContext } from '..'
+import { Context } from '..'
 
-interface IActionOptions {
+interface ActionOptions {
   name?: string,
   desc?: string,
   router?: any,
@@ -14,10 +14,10 @@ interface IActionOptions {
   delete?: boolean,
 }
 
-export interface IAction {
+export interface Action {
   [path: string]: {
-    options: IActionOptions,
-    default (ctx: IContext): Promise<void>;
+    options: ActionOptions,
+    default (ctx: Context): Promise<void>;
   }
 }
 

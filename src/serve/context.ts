@@ -1,11 +1,11 @@
-import { _, DataSet, echo, helper, IContext, secure } from '..'
+import { _, Context, DataSet, echo, helper, secure } from '..'
 
 export default {
 
   session_store: null as any,
 
   get session () {
-    const ctx = this as IContext
+    const ctx = this as Context
     return {
       get (name: string): DataSet {
         if (!ctx.session_store) {
@@ -24,31 +24,31 @@ export default {
   },
 
   required<T> (id: string, value: T, title?: string) {
-    const ctx = this as IContext
+    const ctx = this as Context
     const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
     return helper.checkParam(id, value, data, true, title)
   },
 
   have<T> (id: string, value: T, title?: string) {
-    const ctx = this as IContext
+    const ctx = this as Context
     const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
     return helper.checkParam(id, value, data, false, title)
   },
 
   page () {
-    const ctx = this as IContext
+    const ctx = this as Context
     const rows = _.toInteger(ctx.query.rows) || 20
     const last = _.toInteger(ctx.query.last) || 0
     return { rows, last }
   },
 
   jsonOk (body = {}) {
-    const that = this as IContext
+    const that = this as Context
     that.body = { code: 200, body }
   },
 
   jsonFail (message = 'Error', code = 400, mark = 0) {
-    const that = this as IContext
+    const that = this as Context
     that.body = { code, mark, message }
 
     echo.warn('# 请求: %s %s %j', that.method, that.url, that.request.body)
@@ -74,30 +74,30 @@ export default {
   },
 
   htmlOk (content: string) {
-    const that = this as IContext
+    const that = this as Context
     that.body = content
   },
 
   htmlFail (message = 'Page Error', status = 404) {
-    const that = this as IContext
+    const that = this as Context
     that.body = message
     that.status = status
   },
 
   bufferShowOk (body: string | Buffer, type: string) {
-    const that = this as IContext
+    const that = this as Context
     that.body = body
     that.type = type
   },
 
   bufferDownOk (body: string | Buffer, filename: string) {
-    const that = this as IContext
+    const that = this as Context
     that.body = body
     that.attachment(filename)
   },
 
   fileDownOk (filename: string) {
-    const that = this as IContext
+    const that = this as Context
     that.filename = filename
   }
 }

@@ -1,7 +1,7 @@
 import * as send from 'koa-send'
-import { IContext } from './typings'
+import { Context } from './typings'
 
-export default () => async (ctx: IContext, next: () => Promise<void>) => {
+export default () => async (ctx: Context, next: () => Promise<void>) => {
   try {
     await next()
     if (ctx.respond && !ctx.response.body) {
