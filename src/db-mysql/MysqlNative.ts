@@ -155,14 +155,16 @@ export class MysqlNative<Scheme> {
     const qb = this.table(trx).select(pick)
     query(qb)
     qb.orderBy('id', 'desc')
-    return await qb.first() as Scheme | null
+    const first = await qb.first()
+    return this.result(first, pick)
   }
 
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
     qb.orderBy('id', 'desc')
-    return await qb as Scheme[]
+    const list = await qb
+    return list.map(v => this.result(v, pick) as Scheme) || []
   }
 
   protected async count (query: Query, trx?: Transaction) {
