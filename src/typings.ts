@@ -1,7 +1,7 @@
-export { Action } from './action/typings'
-export { Context, ContextExt } from './serve/typings'
-export { Env, EnvExt } from './env/typings'
-export { SafePartial, Query, Transaction, Page } from './db-mysql/MysqlNative'
+export * from './action/typings'
+export * from './serve/typings'
+export * from './env/typings'
+export * from './db-mysql/typings'
 
 declare type Basic = string | number | boolean | null | Date | undefined
 
@@ -13,6 +13,6 @@ export interface Dic<T> {
   [index: string]: T
 }
 
-export declare type Partial<T> = {
+export type Partial<T> = {
   [U in keyof T]?: T[U] extends {} ? Partial<T[U]> : T[U]
 };

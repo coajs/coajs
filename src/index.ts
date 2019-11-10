@@ -18,7 +18,6 @@ export { default as env } from './env'
 export { default as echo } from './echo'
 export { default as die } from './die'
 export { default as action } from './action'
-export { default as helper } from './helper'
 
 // 扩展相关
 export { default as secure } from './secure'
@@ -26,6 +25,7 @@ export { default as secure } from './secure'
 // 数据相关
 export { default as data } from './data'
 export { default as uuid } from './uuid'
+export { default as lock } from './lock'
 
 // 数据库相关
 export { default as mongo } from './db-mongo/mongo'

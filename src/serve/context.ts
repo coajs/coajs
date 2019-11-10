@@ -1,4 +1,4 @@
-import { _, Context, DataSet, echo, helper, secure } from '..'
+import { _, Context, DataSet, echo, $, secure } from '..'
 
 export default {
 
@@ -26,13 +26,13 @@ export default {
   required<T> (id: string, value: T, title?: string) {
     const ctx = this as Context
     const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
-    return helper.checkParam(id, value, data, true, title)
+    return $.checkParam(id, value, data, true, title)
   },
 
   have<T> (id: string, value: T, title?: string) {
     const ctx = this as Context
     const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
-    return helper.checkParam(id, value, data, false, title)
+    return $.checkParam(id, value, data, false, title)
   },
 
   page () {

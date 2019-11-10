@@ -1,5 +1,5 @@
-import { _, cache, DataSet, secure } from '..'
-import { MysqlNative, Page, Query, SafePartial, Transaction } from './MysqlNative'
+import { _, cache, DataSet, MysqlNative, secure } from '..'
+import { Page, Query, SafePartial, Transaction } from './typings'
 
 export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
 
