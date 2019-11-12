@@ -27,6 +27,7 @@ export default {
   docs: {
     expansion: 'list', // 可选full,list,none
     filter: false,
+    sep: '/',
     info: {
       title: '平台接口文档',
       description: '平台接口文档，包含用户端和管理端'

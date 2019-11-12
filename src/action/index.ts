@@ -1,8 +1,10 @@
 import * as fg from 'fast-glob'
-import { _, Action, Dic } from '..'
+import { _, Action, Dic, env } from '..'
 import docs from './docs'
 import route from './route'
 import html from './tpl/html'
+
+const sep = env.docs.sep
 
 // 添加action文件
 const actions = () => {
@@ -18,8 +20,8 @@ const actions = () => {
     _.forEach(file, (v, path) => {
 
       // 如果不是/开头，则添加
-      if (!/^\//.test(path))
-        path = '/' + path
+      if (!path.startsWith(sep))
+        path = sep + path
 
       const options = v.options || {}
       const handle = v.default

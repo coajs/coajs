@@ -100,6 +100,11 @@ export default (base: string) => `
         .swagger-ui .opblock-body pre span {
             color: #555 !important;
         }
+        
+        /* 隐藏地址第一个字母 */
+        .swagger-ui .opblock-summary .opblock-summary-path a:first-letter {
+            font-size: 0;
+        }
 
     </style>
 </head>
