@@ -5,13 +5,11 @@ const route = new KoaRouter()
 
 export default new class {
 
-  base = ''
   router = route
 
   append (path: string, method: string, action: (ctx: any) => Promise<any>) {
 
     method = _.toLower(method)
-    path = this.base + path
 
     switch (method) {
       case 'get':

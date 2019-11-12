@@ -4,18 +4,18 @@ import life from '../life'
 import lib from './lib'
 import middleware from './middleware'
 
-export default async (opt: { base?: string, apps: Dic<string>, started?: () => void }) => {
+export default async (opt: { base?: string, sep?: string, apps: Dic<string>, started?: () => void }) => {
 
   lib.showBootInfo()
 
-  const option = _.defaults(opt, { base: '', app: {}, started: _.noop })
+  const option = _.defaults(opt, { base: 'cgi', sep: '.', app: {}, started: _.noop })
 
   const koa = new Koa()
 
   await life.created()
 
   // 初始化路由
-  action.attach(option.base, option.apps)
+  action.attach(option.base, option.sep, option.apps)
 
   // 初始化koa中间件
   middleware(koa)

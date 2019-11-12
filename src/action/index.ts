@@ -4,7 +4,7 @@ import docs from './docs'
 import route from './route'
 import html from './tpl/html'
 
-const sep = env.docs.sep
+let BASE = 'cgi', SEP = '.'
 
 // 添加action文件
 const actions = () => {
@@ -19,9 +19,8 @@ const actions = () => {
     // 遍历当前action下所有的路由
     _.forEach(file, (v, path) => {
 
-      // 如果不是/开头，则添加
-      if (!path.startsWith(sep))
-        path = sep + path
+      // 处理path
+      path = BASE + SEP + path.replace(/\./g, SEP)
 
       const options = v.options || {}
       const handle = v.default
@@ -41,31 +40,34 @@ const actions = () => {
 }
 
 // 添加action文件
-const actionDoc = (base = '') => {
+const actionDoc = () => {
 
-  const docPath = '/doc' + base
-  const docBody = html(base)
+  const docPath = env.docs.path.replace(/\/$/, '')
 
   // 文档UI
   route.router.get(docPath, ctx => {
     if (ctx.path === docPath) return ctx.redirect(docPath + '/')
-    ctx.body = docBody
+    ctx.body = html(BASE, SEP)
   })
   // 文档内容
   route.router.get(docPath + '.json', ctx => {
     const protocol = ctx.header['x-client-scheme'] || ctx.header['x-scheme'] || ctx.protocol
     const host = ctx.header['ali-swift-stat-host'] || ctx.host.replace(':8081', '')
-    docs.server.url = protocol + '://' + host + route.base
+    docs.server.url = protocol + '://' + host
     ctx.body = docs.docs
   })
 }
 
 export default new class {
 
-  attach (base: string, apps: Dic<string>) {
+  attach (base: string, sep: string, apps: Dic<string>) {
+
+    if (!base.startsWith('/'))
+      base = '/' + base
+    BASE = base
+    SEP = sep
 
     // 配置
-    route.base = '/cgi' + base
     docs.options()
 
     // 遍历apps分组
@@ -75,7 +77,7 @@ export default new class {
     actions()
 
     // 处理doc
-    actionDoc(base)
+    actionDoc()
 
   }
 

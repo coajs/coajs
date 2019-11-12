@@ -1,6 +1,6 @@
 import { env } from '../..'
 
-export default (base: string) => `
+export default (base: string, sep: string) => `
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -103,7 +103,7 @@ export default (base: string) => `
         
         /* 隐藏地址第一个字母 */
         .swagger-ui .opblock-summary .opblock-summary-path a:first-letter {
-            font-size: 0;
+            font-size: ${sep === '/' ? 'inherit' : 0};
         }
 
     </style>
@@ -117,17 +117,17 @@ export default (base: string) => `
 
         window.ui = SwaggerUIBundle({
 
-            url: location.origin + '/doc${base}.json',
+            url: location.origin + '${env.docs.path}.json',
 
             dom_id: '#swagger-ui',
 
             deepLinking: true,
             
-            filter: ${env.docs.filter || false},
+            filter: ${env.docs.filter},
 
             validatorUrl: null,
 
-            docExpansion: '${env.docs.expansion || 'list'}',
+            docExpansion: '${env.docs.expansion}',
 
             defaultModelsExpandDepth: 10,
             defaultModelExpandDepth : 10,

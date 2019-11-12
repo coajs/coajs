@@ -1,10 +1,10 @@
 import { Dic } from '../typings'
 import initEnv from './init'
-import initEnvExtend from './initExtend'
+import initEnvDefault from './initDefault'
 
 declare type InitEnv = typeof initEnv
-declare type InitEnvExtend = typeof initEnvExtend
+declare type InitEnvDefault = typeof initEnvDefault
 
-export interface Env extends InitEnv, InitEnvExtend, Dic<any> {}
+export interface Env extends InitEnv, InitEnvDefault, Dic<any> {}
 
 export interface EnvExt extends Env {}
