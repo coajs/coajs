@@ -1,5 +1,5 @@
 import * as fg from 'fast-glob'
-import { _, Dic, Action } from '..'
+import { _, Action, Dic } from '..'
 import docs from './docs'
 import route from './route'
 import html from './tpl/html'
@@ -16,6 +16,10 @@ const actions = () => {
 
     // 遍历当前action下所有的路由
     _.forEach(file, (v, path) => {
+
+      // 如果不是/开头，则添加
+      if (!/^\//.test(path))
+        path = '/' + path
 
       const options = v.options || {}
       const handle = v.default
