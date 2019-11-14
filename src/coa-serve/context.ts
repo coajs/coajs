@@ -1,4 +1,4 @@
-import { _, Context, DataSet, echo, $, secure } from '..'
+import { $, _, Context, DataSet, echo, secure } from '..'
 
 export default {
 
@@ -42,9 +42,9 @@ export default {
     return { rows, last }
   },
 
-  jsonOk (body = {}) {
+  jsonOk (body = {}, state = {}) {
     const that = this as Context
-    that.body = { code: 200, body }
+    that.body = { code: 200, body, ...state }
   },
 
   jsonFail (message = 'Error', code = 400, mark = 0) {
