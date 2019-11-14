@@ -16,6 +16,10 @@ export default new class {
     return createHmac('sha1', key).update(str).digest(digest)
   }
 
+  sha256_hmac (str: BinaryLike, key: string, digest: HexBase64Latin1Encoding = 'hex') {
+    return createHmac('sha256', key).update(str).digest(digest)
+  }
+
   base64_encode (str: string) {
     return Buffer.from(str).toString('base64')
   }

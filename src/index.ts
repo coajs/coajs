@@ -22,11 +22,6 @@ export { default as action } from './coa-action'
 // 扩展相关
 export { default as secure } from './coa-secure'
 
-// 数据相关
-export { default as data } from './coa-data'
-export { default as uuid } from './coa-uuid'
-export { default as lock } from './coa-lock'
-
 // 数据库相关
 export { default as mongo } from './coa-db-mongo/mongo'
 export { default as mysql } from './coa-db-mysql/mysql'
@@ -34,3 +29,10 @@ export { default as cache } from './coa-db-redis/cache'
 export { MongoNative } from './coa-db-mongo/MongoNative'
 export { MysqlNative } from './coa-db-mysql/MysqlNative'
 export { MysqlCached } from './coa-db-mysql/MysqlCached'
+
+// 数据相关
+export { default as data } from './coa-data'
+export { default as uuid } from './coa-uuid'
+export { default as lock } from './coa-lock'
+export { default as storage } from './coa-storage'
+

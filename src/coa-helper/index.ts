@@ -83,4 +83,9 @@ export default new class {
     // http://momentjs.com/docs/#/displaying/
     return moment(time || new Date()).format(format)
   }
+
+  // 判断汉字长度
+  stringLength (str: string) {
+    return str.replace(/[^\x00-\xff]/g, '01').length
+  }
 }

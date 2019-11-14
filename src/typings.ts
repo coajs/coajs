@@ -12,7 +12,3 @@ export interface DataSet {
 export interface Dic<T> {
   [index: string]: T
 }
-
-export type Partial<T> = {
-  [U in keyof T]?: T[U] extends {} ? Partial<T[U]> : T[U]
-};
