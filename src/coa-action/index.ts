@@ -20,7 +20,9 @@ const actions = () => {
     _.forEach(file, (v, path) => {
 
       // 处理path
-      path = BASE + SEP + path.replace(/\./g, SEP)
+      if (SEP !== '.')
+        path = path.replace(/\./g, SEP)
+      path = BASE + path
 
       const options = v.options || {}
       const handle = v.default
@@ -62,8 +64,9 @@ export default new class {
 
   attach (base: string, sep: string, apps: Dic<string>) {
 
-    if (!base.startsWith('/'))
-      base = '/' + base
+    if (!base.startsWith('/')) base = '/' + base
+    if (!base.endsWith(sep)) base = base + sep
+
     BASE = base
     SEP = sep
 
