@@ -43,7 +43,7 @@ export class MysqlNative<Scheme> {
     const time = _.now()
     const id = (data as any)[this.key] as string || await this.newId()
     const value = { [this.key]: id, created: time, updated: time, ...data }
-    await mysql(this.name).insert(this.fill(value, true))
+    await this.table(trx).insert(this.fill(value, true))
     return id
   }
 
