@@ -1,6 +1,6 @@
 {
   "name": "coajs",
-  "version": "1.0.57",
+  "version": "1.0.58",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

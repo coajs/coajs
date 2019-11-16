@@ -42,9 +42,9 @@ export default {
     return { rows, last }
   },
 
-  jsonOk (body = {}, state = {}) {
+  jsonOk (body = {}, state?: {}) {
     const that = this as Context
-    that.body = { code: 200, body, ...state }
+    that.body = { code: 200, body, state }
   },
 
   jsonFail (message = 'Error', code = 400, mark = 0) {
