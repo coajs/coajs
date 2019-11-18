@@ -28,9 +28,11 @@ export class MysqlNative<Scheme> {
       if (typeof v === 'object') this.jsons.push(k)
       this.columns.push(k)
     })
+    // 设置第一个column值为主键
     this.key = option.key || this.columns[0]
   }
 
+  // 检查分页参数
   private static checkPage (page: Page) {
     let last = page.last, rows = page.rows, more = false as boolean
     if (last < 0) last = 0
@@ -39,21 +41,28 @@ export class MysqlNative<Scheme> {
     return { last, rows, more }
   }
 
+  // 插入
   async insert (data: SafePartial<Scheme>, trx?: Transaction) {
-    const time = _.now()
+    // 设置主键ID
     const id = (data as any)[this.key] as string || await this.newId()
+    // 设置时间数据
+    const time = _.now()
     const value = { [this.key]: id, created: time, updated: time, ...data }
+    // 新增数据
     await this.table(trx).insert(this.fill(value, true))
     return id
   }
 
+  // 批量插入
   async mInsert (dataList: SafePartial<Scheme>[], trx?: Transaction) {
     const time = _.now()
     const values = [] as any[]
     const ids = [] as string[]
     for (const i in dataList) {
       const data = dataList[i] as any
+      // 设置主键ID
       const id = data[this.key] || await this.newId()
+      // 设置时间数据
       const value = { [this.key]: id, created: time, updated: time, ...data }
       values.push(this.fill(value, true))
       ids.push(id)
@@ -62,12 +71,14 @@ export class MysqlNative<Scheme> {
     return ids
   }
 
+  // 通过ID更新
   async updateById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
     const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     return result || 0
   }
 
+  // 通过查询条件更新
   async updateByIdQuery (id: string, query: Query, data: SafePartial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
     const qb = this.table(trx).where({ [this.key]: id })
@@ -76,6 +87,7 @@ export class MysqlNative<Scheme> {
     return result || 0
   }
 
+  // 通过ID更新或插入
   async upsertById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
     const time = _.now()
     _.defaults(data, { updated: time })
@@ -87,16 +99,19 @@ export class MysqlNative<Scheme> {
     return result
   }
 
+  // 通过ID删除多个
   async deleteByIds (ids: string[], trx?: Transaction) {
     const result = await this.table(trx).whereIn(this.key, ids).delete()
     return result || 0
   }
 
+  // 通过ID获取一个
   async getById (id: string, pick = this.columns, trx?: Transaction) {
     const result = await this.table(trx).select(pick).where(this.key, id)
     return this.result(result[0], pick)
   }
 
+  // 通过ID获取多个
   async mGetByIds (ids: string[], pick = this.pick, trx?: Transaction) {
     const result = {} as Dic<Scheme>
     pick.indexOf(this.key) < 0 && pick.unshift(this.key)
@@ -108,22 +123,26 @@ export class MysqlNative<Scheme> {
     return result
   }
 
+  // 截断表
   async truncate (trx?: Transaction) {
     await this.table(trx).truncate()
   }
 
+  // 通过某个字段查询ID
   protected async getIdBy (field: string, value: string | number, trx?: Transaction) {
     const result = await this.table(trx).select(this.key).where(field, value)
     const data = result[0] as Dic<string> || {}
     return data[this.key] || ''
   }
 
+  // 获取table对象
   protected table (trx?: Transaction) {
     const table = mysql<Scheme>(this.name)
     trx && table.transacting(trx)
     return table
   }
 
+  // 查询ID格式全部列表
   protected async selectIdList (query: Query, trx?: Transaction) {
     const qb = this.table(trx).select([this.key])
     query(qb)
@@ -131,6 +150,7 @@ export class MysqlNative<Scheme> {
     return await qb as Scheme[]
   }
 
+  // 查询ID格式分页列表
   protected async selectIdPageList (page: Page, query: Query, trx?: Transaction) {
 
     let { last, rows, more } = MysqlNative.checkPage(page)
@@ -151,6 +171,7 @@ export class MysqlNative<Scheme> {
     return { list, page: { last, more, rows } }
   }
 
+  // 查询第一条数据
   protected async selectFirst (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
@@ -159,6 +180,7 @@ export class MysqlNative<Scheme> {
     return this.result(first, pick)
   }
 
+  // 查询列表
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
@@ -167,6 +189,7 @@ export class MysqlNative<Scheme> {
     return list.map(v => this.result(v, pick) as Scheme) || []
   }
 
+  // 计数
   protected async count (query: Query, trx?: Transaction) {
     const qb = this.table(trx).count('id as count')
     query(qb)
@@ -174,10 +197,12 @@ export class MysqlNative<Scheme> {
     return ret.count || 0
   }
 
+  // 获取ID
   protected async newId () {
     return await uuid.hexId()
   }
 
+  // 从数据库获取之后补全数据
   protected result (data: any, pick: string[]) {
     if (data === null || data === undefined)
       return null
@@ -193,6 +218,7 @@ export class MysqlNative<Scheme> {
     return result as Scheme
   }
 
+  // 更新和插入数据库之前处理数据
   protected fill<T> (data: T, insert = false) {
     const result = data as any
     // 当为insert的时候填满数据

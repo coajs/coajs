@@ -1,1 +1,1 @@
-npm version patch && npm run build && npm publish
+npm run build && npm version patch && npm publish
