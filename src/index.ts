@@ -23,9 +23,10 @@ export { default as action } from './coa-action'
 export { default as secure } from './coa-secure'
 
 // 数据库相关
+export { default as redis } from './coa-db-redis/redis'
+export { default as cache } from './coa-db-redis/cache'
 export { default as mongo } from './coa-db-mongo/mongo'
 export { default as mysql } from './coa-db-mysql/mysql'
-export { default as cache } from './coa-db-redis/cache'
 export { MongoNative } from './coa-db-mongo/MongoNative'
 export { MysqlNative } from './coa-db-mysql/MysqlNative'
 export { MysqlCached } from './coa-db-mysql/MysqlCached'
