@@ -1,4 +1,4 @@
-import { _, die, moment } from '..'
+import { _, BigNumber, die, moment } from '..'
 
 export default new class {
 
@@ -12,6 +12,11 @@ export default new class {
   // 判断是否在数组中
   inArray (list: any[], value: any) {
     return _.indexOf(list, value) > -1
+  }
+
+  // 解析成数组，如果已经是数组则直接返回，不是数组则将值放在数组中
+  parseArray<T> (data: any, defaults: T): any[] | T {
+    return _.isArray(data) ? data : (data ? [data] : defaults)
   }
 
   // 校验并返回处理后的参数
@@ -78,10 +83,34 @@ export default new class {
         await callback(list[i], i)
   }
 
+  // 安全的异步遍历循环
+  async asyncEachSafe (list: any, callback: (item: any, key: string | number) => void) {
+    for (let i in list) {
+      try {
+        if (list.hasOwnProperty(i)) {
+          await callback(list[i], i)
+        }
+      } catch (e) {
+      }
+    }
+  }
+
   // 时间日期格式化
   datetime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
     // http://momentjs.com/docs/#/displaying/
     return moment(time || new Date()).format(format)
+  }
+
+  // 计算平均值
+  average (list: number[]) {
+    if (list.length < 1) return 0
+
+    let ave = new BigNumber(0)
+    _.forEach(list, v => {
+      ave = ave.plus(v)
+    })
+    ave = ave.div(list.length)
+    return ave.dp(2).toNumber()
   }
 
   // 判断汉字长度
