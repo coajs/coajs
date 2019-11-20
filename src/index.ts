@@ -4,12 +4,14 @@ require('source-map-support/register')
 export * from './typings'
 
 // 常用工具
+import axios from 'axios'
 import BigNumber from 'bignumber.js'
+import HashIds from 'hashids'
 import * as _ from 'lodash'
 import * as moment from 'moment'
 import $ from './coa-helper'
 
-export { _, $, moment, BigNumber }
+export { _, $, moment, axios, BigNumber, HashIds }
 
 // serve相关
 export { default as serve } from './coa-serve'

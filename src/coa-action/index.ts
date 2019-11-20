@@ -20,8 +20,8 @@ const actions = () => {
     _.forEach(file, (v, path) => {
 
       // 处理path
-      if (SEP !== '.')
-        path = path.replace(/\./g, SEP)
+      if (SEP !== '.') path = path.replace(/\./g, SEP)
+      if (path.startsWith(SEP)) path = path.substr(1)
       path = BASE + path
 
       const options = v.options || {}

@@ -20,7 +20,7 @@ mysql.on('query-error', (error: any) => {
 })
 
 env.mysql.trace && mysql.on('query', (data: any) => {
-  echo.grey('* SQL: %s', mysql.raw(data.sql, data.bindings).toString())
+  env.started && echo.grey('* SQL: %s', mysql.raw(data.sql, data.bindings).toString())
 })
 
 export default mysql

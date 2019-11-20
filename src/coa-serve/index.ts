@@ -1,5 +1,5 @@
 import * as Koa from 'koa'
-import { _, action, Dic } from '..'
+import { _, action, Dic, env } from '..'
 import life from '../life'
 import lib from './lib'
 import middleware from './middleware'
@@ -22,9 +22,10 @@ export default async (opt: { base?: string, sep?: string, apps: Dic<string>, sta
 
   const port = parseInt(process.env.PORT as string) || 8000
   koa.listen(port, async () => {
+    lib.showBootInfo(port)
     await life.started()
     option.started()
-    lib.showBootInfo(port)
+    env.started = true
   })
 
 };
