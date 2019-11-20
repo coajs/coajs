@@ -1,66 +1,40 @@
 import { _, Dic } from '..'
 
-declare type TList = any[];
 declare type TWorkData = Dic<any>;
 declare type TWorker = (ids: string[]) => Promise<TWorkData>
 
 export default new class {
 
   // 扩展数据
-  async extend (list: TList, worker: TWorker, key: string, extend: string, value = {}) {
+  async extend (list: any[], key: string, extend = '', worker: TWorker, value = {}) {
 
     // 获取需要的ID列表
     const ids = [] as string[]
     _.forEach(list, v => {
-      v && v[key] && ids.push(v[key])
+      const id = _.get(v, key)
+      if (!id) return
+      if (_.isArray(id)) id.forEach(i => ids.push(i))
+      else ids.push(id)
     })
 
     // 如果数据不存在，直接返回
     if (ids.length < 1)
-      return list
+      return
 
     // 根据ID列表通过worker获取数据
     const data = await worker(ids)
 
     // 遍历数据，将数据附加到list
     _.forEach(list, v => {
-      if (v && v[key]) {
-        const newData = data[v[key]] || value
-        if (extend) v[extend] = newData
-        else _.extend(v, newData)
+      const id = _.get(v, key)
+      if (!id) return
+      if (_.isArray(id)) {
+        const newArray = id.map(v => data[v] || value)
+        _.set(v, extend, newArray)
+      } else {
+        const newData = data[id] || value
+        extend ? _.set(v, extend, newData) : _.assign(v, newData)
       }
     })
-
-    return list
-
-  }
-
-  // 扩展数组数据数据
-  async extendArray (list: TList, worker: TWorker, dataKey: string, extend: string, value = {}) {
-
-    // 获取需要的ID列表
-    const ids = [] as string[]
-    _.forEach(list, v => {
-      if (v && v[dataKey] && v[dataKey].length)
-        _.forEach(v[dataKey], v => ids.push(v))
-    })
-
-    // 如果数据不存在，直接返回
-    if (ids.length < 1)
-      return list
-
-    // 根据ID列表通过worker获取数据
-    const data = await worker(ids)
-
-    // 遍历数据，将数据附加到list
-    _.forEach(list, v => {
-      if (v && v[dataKey] && v[dataKey].length) {
-        const newArray = _.map(v[dataKey], v => data[v] || value)
-        if (extend) v[extend] = newArray
-        else v[dataKey] = newArray
-      }
-    })
-
-    return list
   }
 }
