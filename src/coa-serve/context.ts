@@ -9,30 +9,34 @@ export default {
     return {
       get (name: string): DataSet {
         if (!ctx.session_store) {
-          const lowerName = _.toLower(name)
-          const session_string = ctx.headers[name] || ctx.headers[lowerName] || ctx.cookies.get(name) || ctx.query[name] || ctx.query[lowerName] || ctx.request.body[name] || ''
+          const session_string = ctx.input(name.toLowerCase()) || ''
           ctx.session_store = secure.session_decode(session_string) || {}
         }
         return ctx.session_store
       },
       set (name: string, value: DataSet, ms: number, cookie = false) {
         const session = secure.session_encode(value, ms)
-        cookie && ctx.cookies.set(name, session, { maxAge: ms, httpOnly: false, secure: false })
+        cookie && ctx.cookies.set(name.toLowerCase(), session, { maxAge: ms, httpOnly: false, secure: false })
         return session
       },
     }
   },
 
-  required<T> (id: string, value: T, title?: string) {
+  input (name: string) {
     const ctx = this as Context
-    const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
-    return $.checkParam(id, value, data, true, title)
+    return ctx.headers[name] || ctx.cookies.get(name) || ctx.params[name] || ctx.query[name] || ctx.request.body[name] || undefined
   },
 
-  have<T> (id: string, value: T, title?: string) {
+  required<T> (id: string, value: T) {
     const ctx = this as Context
     const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
-    return $.checkParam(id, value, data, false, title)
+    return $.checkParam(id, value, data, true)
+  },
+
+  have<T> (id: string, value: T) {
+    const ctx = this as Context
+    const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
+    return $.checkParam(id, value, data, false)
   },
 
   page () {
