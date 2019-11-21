@@ -116,9 +116,12 @@ export class MysqlNative<Scheme> {
     const result = {} as Dic<Scheme>
     pick.indexOf(this.key) < 0 && pick.unshift(this.key)
     const rows = await this.table(trx).select(pick).whereIn(this.key, ids)
-    _.forEach(rows, (v: any) => {
+    rows.forEach((v: any) => {
       const key = v[this.key] as string
       result[key] = this.result(v, pick) as any
+    })
+    ids.forEach(id => {
+      if (!result.hasOwnProperty(id)) result[id] = null as any
     })
     return result
   }
