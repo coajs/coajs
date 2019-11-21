@@ -1,4 +1,4 @@
-import { $, _, Context, DataSet, echo, secure } from '..'
+import { $, _, Context, DataSet, echo, JsonState, secure } from '..'
 
 export default {
 
@@ -20,6 +20,10 @@ export default {
         return session
       },
     }
+  },
+
+  get jsonState () {
+    return new JsonState()
   },
 
   input (name: string) {
@@ -46,8 +50,9 @@ export default {
     return { rows, last }
   },
 
-  jsonOk (body = {}, state?: {}) {
+  jsonOk (body = {}, state?: JsonState) {
     const that = this as Context
+    if (state) state = state.value() as any
     that.body = { code: 200, body, state }
   },
 

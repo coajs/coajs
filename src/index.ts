@@ -15,6 +15,7 @@ export { _, $, moment, axios, BigNumber, HashIds }
 
 // serve相关
 export { default as serve } from './coa-serve'
+export { JsonState } from './coa-serve/libs/JsonState'
 
 // core相关
 export { default as env } from './coa-env'

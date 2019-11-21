@@ -3,8 +3,8 @@ import * as koaBodyParser from 'koa-bodyparser'
 import * as koaMorgan from 'koa-morgan'
 import * as koaStatic from 'koa-static'
 import { action, env } from '..'
+import bin from './bin'
 import context from './context'
-import lib from './lib'
 import response from './response'
 
 export default (koa: Koa) => {
@@ -15,9 +15,9 @@ export default (koa: Koa) => {
 
   koa.use(response())
   koa.use(action.routes())
-  lib.extend(koa.context, context)
+  bin.extend(koa.context, context)
 
   try {
-    lib.extend(koa.context, require('context').default)
+    bin.extend(koa.context, require('context').default)
   } catch (e) {}
 }
