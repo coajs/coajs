@@ -1,5 +1,5 @@
-import * as Knex from 'knex'
 import { die, echo, env } from '..'
+import Knex from './Knex'
 
 const mysql = Knex({
   client: 'mysql',

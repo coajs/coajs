@@ -1,3 +1,4 @@
+import * as Knex from 'knex'
 import { _, Dic, mysql, uuid } from '..'
 import { ModelOption, Page, Query, SafePartial, Transaction } from './typings'
 
