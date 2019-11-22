@@ -26,47 +26,40 @@ export default {
     return new JsonState()
   },
 
-  input (name: string) {
-    const ctx = this as Context
-    return ctx.headers[name] || ctx.cookies.get(name) || ctx.params[name] || ctx.query[name] || ctx.request.body[name] || undefined
+  input (this: Context, name: string) {
+    return this.headers[name] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
   },
 
-  required<T> (id: string, value: T) {
-    const ctx = this as Context
-    const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
+  required<T> (this: Context, id: string, value: T) {
+    const data = this.header[id] || this.request.body[id] || this.query[id] || undefined
     return $.checkParam(id, value, data, true)
   },
 
-  have<T> (id: string, value: T) {
-    const ctx = this as Context
-    const data = ctx.header[id] || ctx.request.body[id] || ctx.query[id] || undefined
+  have<T> (this: Context, id: string, value: T) {
+    const data = this.header[id] || this.request.body[id] || this.query[id] || undefined
     return $.checkParam(id, value, data, false)
   },
 
-  page () {
-    const ctx = this as Context
-    const rows = _.toInteger(ctx.query.rows) || 20
-    const last = _.toInteger(ctx.query.last) || 0
+  page (this: Context) {
+    const rows = _.toInteger(this.query.rows) || 20
+    const last = _.toInteger(this.query.last) || 0
     return { rows, last }
   },
 
-  jsonOk (body = {}, state?: JsonState) {
-    const that = this as Context
+  jsonOk (this: Context, body = {}, state?: JsonState) {
     if (state) state = state.value() as any
-    that.body = { code: 200, body, state }
+    this.body = { code: 200, body, state }
   },
 
-  jsonFail (message = 'Error', code = 400, mark = 0) {
-    const that = this as Context
-    that.body = { code, mark, message }
-
-    echo.warn('# 请求: %s %s %j', that.method, that.url, that.request.body)
-    echo.warn('# 返回: %j', that.body)
+  jsonFail (this: Context, message = 'Error', code = 400, mark = 0) {
+    this.body = { code, mark, message }
+    echo.warn('# 请求: %s %s %j', this.method, this.url, this.request.body)
+    echo.warn('# 返回: %j', this.body)
   },
 
-  jsonAnyFail (e: any) {
+  jsonAnyFail (this: Context, e: any) {
 
-    const info: any = e.info || {}
+    const info = e.info || {}
 
     // 打印错误
     if (!info.tips) {
@@ -79,34 +72,28 @@ export default {
     } else {// 其他错误
       this.jsonFail(e.toString(), 500)
     }
-
   },
 
-  htmlOk (content: string) {
-    const that = this as Context
-    that.body = content
+  htmlOk (this: Context, content: string) {
+    this.body = content
   },
 
-  htmlFail (message = 'Page Error', status = 404) {
-    const that = this as Context
-    that.body = message
-    that.status = status
+  htmlFail (this: Context, message = 'Page Error', status = 404) {
+    this.body = message
+    this.status = status
   },
 
-  bufferShowOk (body: string | Buffer, type: string) {
-    const that = this as Context
-    that.body = body
-    that.type = type
+  bufferShowOk (this: Context, body: string | Buffer, type: string) {
+    this.body = body
+    this.type = type
   },
 
-  bufferDownOk (body: string | Buffer, filename: string) {
-    const that = this as Context
-    that.body = body
-    that.attachment(filename)
+  bufferDownOk (this: Context, body: string | Buffer, filename: string) {
+    this.body = body
+    this.attachment(filename)
   },
 
-  fileDownOk (filename: string) {
-    const that = this as Context
-    that.filename = filename
+  fileDownOk (this: Context, filename: string) {
+    this.filename = filename
   }
 }

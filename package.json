@@ -1,6 +1,6 @@
 {
   "name": "coajs",
-  "version": "1.0.66",
+  "version": "1.0.68",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -35,7 +35,7 @@
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "coajs-types": "^1.0.2",
+    "coajs-types": "^1.0.3",
     "tsc-watch": "^4.0.0",
     "typescript": "^3.7.2"
   }

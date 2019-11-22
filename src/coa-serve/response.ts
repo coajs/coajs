@@ -4,7 +4,7 @@ import { Context } from './typings'
 export default () => async (ctx: Context, next: () => Promise<void>) => {
   try {
     await next()
-    if (ctx.respond && !ctx.response.body) {
+    if (ctx.respond !== false && !ctx.response.body) {
       if (ctx.filename) {
         try {
           ctx.attachment(ctx.filename)
