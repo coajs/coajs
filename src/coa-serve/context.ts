@@ -27,7 +27,7 @@ export default {
   },
 
   input (this: Context, name: string) {
-    return this.headers[name] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
+    return this.headers[name.toLowerCase()] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
   },
 
   required<T> (this: Context, id: string, value: T) {
