@@ -1,4 +1,3 @@
-import * as Knex from 'knex'
 import { _, Dic, mysql, uuid } from '..'
 import { ModelOption, Page, Query, SafePartial, Transaction } from './typings'
 
@@ -148,9 +147,9 @@ export class MysqlNative<Scheme> {
 
   // 查询ID格式全部列表
   protected async selectIdList (query: Query, trx?: Transaction) {
-    const qb = this.table(trx).select([this.key])
+    const qb = this.table(trx).select(this.name + '.' + this.key)
     query(qb)
-    qb.orderBy('id', 'desc')
+    qb.orderBy(this.name + '.id', 'desc')
     return await qb as Scheme[]
   }
 
@@ -159,10 +158,10 @@ export class MysqlNative<Scheme> {
 
     let { last, rows, more } = MysqlNative.checkPage(page)
 
-    const qb = this.table(trx).select([this.key])
+    const qb = this.table(trx).select(this.name + '.' + this.key)
     query(qb)
     qb.limit(rows + 1).offset(last)
-    qb.orderBy('id', 'desc')
+    qb.orderBy(this.name + '.id', 'desc')
     const list = await qb as Scheme[]
 
     if (list.length === rows + 1) {
@@ -179,7 +178,7 @@ export class MysqlNative<Scheme> {
   protected async selectFirst (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
-    qb.orderBy('id', 'desc')
+    qb.orderBy(this.name + '.id', 'desc')
     const first = await qb.first()
     return this.result(first, pick)
   }
@@ -188,14 +187,14 @@ export class MysqlNative<Scheme> {
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
-    qb.orderBy('id', 'desc')
+    qb.orderBy(this.name + '.id', 'desc')
     const list = await qb
     return list.map(v => this.result(v, pick) as Scheme) || []
   }
 
   // 计数
   protected async count (query: Query, trx?: Transaction) {
-    const qb = this.table(trx).count('id as count')
+    const qb = this.table(trx).count(this.name + '.id as count')
     query(qb)
     const ret = (await qb)[0] as Dic<number> || {}
     return ret.count || 0
