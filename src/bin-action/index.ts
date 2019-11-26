@@ -46,6 +46,10 @@ const actionDoc = () => {
 
   const docPath = env.docs.path.replace(/\/$/, '')
 
+  // 版本信息
+  route.router.get(BASE + 'version', ctx => {
+    ctx.body = env.version
+  })
   // 文档UI
   route.router.get(docPath, ctx => {
     if (ctx.path === docPath) return ctx.redirect(docPath + '/')
