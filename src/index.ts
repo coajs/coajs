@@ -34,6 +34,7 @@ export { default as mysql } from './coa-db-mysql/mysql'
 export { MongoNative } from './coa-db-mongo/MongoNative'
 export { MysqlNative } from './coa-db-mysql/MysqlNative'
 export { MysqlCached } from './coa-db-mysql/MysqlCached'
+export { Queue } from './coa-queue'
 
 // 数据相关
 export { default as data } from './coa-data'

@@ -1,69 +1,49 @@
-import HashIds from 'hashids'
-import { _, uuid } from '..'
-import binMysql from './binMysql'
+import { echo } from '..'
+import mQueue from './mQueue'
 
-const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
-const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-const store = { key1: 0, key2: 0, key3: 0, lock: false }
-const nspDuration = 24 * 3600 * 1000, maxIndex = 9990
+export class Queue {
 
-export default new class {
+  private isWorking = false
 
-  async init () {
-    // 如果已经在执行，就忽略
-    if (store.lock)
-      return
-    store.lock = true
-    const [key1, key2, key3] = await this.newKeys()
-    store.key1 = key1
-    store.key2 = key2
-    store.key3 = key3
-    store.lock = false
+  // 发布新的任务
+  async push (name: string, data: any, maxTimes = 10) {
+    await mQueue.insert({ name, data, maxTimes, status: 1, times: 1 })
+    this.do().then()
   }
 
-  async series (nsp: string) {
-    return await this.newNo(nsp)
+  // 触发任务
+  async do () {
+    // 不允许重复工作
+    if (this.isWorking) return
+    this.isWorking = true
+    // 开始工作，直到队列为空
+    while (await this.dispatch()) { }
+    this.isWorking = false
   }
 
-  async saltId () {
-    // 预保存数据
-    const result = [store.key1, store.key1, ++store.key3]
-    // 某些时机下会异步更新
-    if (store.key3 > maxIndex || store.key1 !== this.getKey1()) {
-      uuid.init().then()
+  protected async worker (name: string, data: any, times: number) {
+    return false
+  }
+
+  // 分配管理任务
+  private async dispatch () {
+    const one = await mQueue.pop()
+    if (!one)
+      return false
+
+    const { queueId, name, data, times } = one
+    try {
+      const result = await this.worker(name, data, times)
+      if (result)
+        await mQueue.deleteByIds([queueId])
+      else
+        await mQueue.updateById(queueId, { status: 2 })
+    } catch (e) {
+      const reason = e.toString()
+      echo.error('任务执行失败: ', reason)
+      await mQueue.updateById(queueId, { reason, status: 3 })
     }
-    // 返回结果
-    return result
-  }
-
-  async hexId () {
-    const saltId = await this.saltId()
-    return hexIds.encode(saltId)
-  }
-
-  async hashId () {
-    const saltId = await this.saltId()
-    return hashIds.encode(saltId)
-  }
-
-  protected getKey1 () {
-    return _.toInteger(_.now() / nspDuration)
-  }
-
-  private async newKeys () {
-    const key1 = this.getKey1()
-    const key2 = await this.newNo(key1.toString())
-    if (key2 === 1)
-      await this.clearNo((key1 - 3).toString())
-    return [key1, key2, 0]
-  }
-
-  private async newNo (key1: string) {
-    return await binMysql.newNo(key1)
-  }
-
-  private async clearNo (key1: string) {
-    await binMysql.clearNo(key1)
+    return true
   }
 
 }
