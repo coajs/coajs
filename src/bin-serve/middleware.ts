@@ -10,7 +10,7 @@ import response from './response'
 export default (koa: Koa) => {
   koa.proxy = true
   koa.use(koaStatic('static'))
-  koa.use(koaMorgan(env.isDev ? 'dev' : 'combined'))
+  koa.use(koaMorgan(env.isDev ? 'dev' : 'short'))
   koa.use(koaBodyParser({ enableTypes: ['json', 'form', 'text'], extendTypes: { text: ['text/xml'] } }))
 
   koa.use(response())

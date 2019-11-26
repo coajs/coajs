@@ -14,16 +14,14 @@ import $ from './coa-helper'
 export { _, $, moment, axios, BigNumber, HashIds }
 
 // serve相关
-export { default as serve } from './coa-serve'
-export { JsonState } from './coa-serve/libs/JsonState'
+export { default as action } from './bin-action'
+export { default as serve } from './bin-serve'
+export { JsonState } from './bin-serve/libs/JsonState'
 
 // core相关
 export { default as env } from './coa-env'
 export { default as echo } from './coa-echo'
 export { default as die } from './coa-die'
-export { default as action } from './coa-action'
-
-// 扩展相关
 export { default as secure } from './coa-secure'
 
 // 数据库相关
