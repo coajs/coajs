@@ -39,4 +39,3 @@ export { default as data } from './coa-data'
 export { default as uuid } from './coa-uuid'
 export { default as lock } from './coa-lock'
 export { default as storage } from './coa-storage'
-

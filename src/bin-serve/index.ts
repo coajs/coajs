@@ -1,10 +1,10 @@
 import * as Koa from 'koa'
-import { _, action, Dic, env } from '..'
+import { _, action, Apps, env } from '..'
 import life from '../life'
 import bin from './bin'
 import middleware from './middleware'
 
-export default async (opt: { base?: string, sep?: string, apps: Dic<string>, started?: () => void }) => {
+export default async (opt: { base?: string, sep?: string, apps: Apps, started?: () => void }) => {
 
   bin.showBootInfo()
 

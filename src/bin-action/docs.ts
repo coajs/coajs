@@ -1,4 +1,4 @@
-import { _, Dic, env } from '..'
+import { _, Apps, env } from '..'
 import swagger from './lib/swagger'
 
 const docs = {
@@ -28,9 +28,14 @@ export default new class {
   docs = docs
   server = docs.servers[0]
 
-  tags (tags: Dic<string>) {
-    _.forEach(tags, (description, name) => {
-      docs.tags.push({ name, description })
+  tags (tags: Apps) {
+    _.forEach(tags, (content, key) => {
+      if (typeof content === 'object')
+        _.forEach(content, (content1, key1) => {
+          docs.tags.push({ name: `${key} ${key1}`, description: content1 })
+        })
+      else
+        docs.tags.push({ name: key, description: content })
     })
   }
 

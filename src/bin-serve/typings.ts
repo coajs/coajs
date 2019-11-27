@@ -1,4 +1,5 @@
 import * as Koa from 'koa'
+import { Dic } from '..'
 import contextExtend from './context'
 
 declare type ContextExtend = typeof contextExtend;
@@ -17,7 +18,4 @@ export interface Context extends ContextExtend, Koa.Context {
 
 export interface ContextExt extends Context {}
 
-
-
-
-
+export type Apps = Dic<string | Dic<string>>

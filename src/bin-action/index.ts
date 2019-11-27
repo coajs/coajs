@@ -1,5 +1,5 @@
 import * as fg from 'fast-glob'
-import { _, Action, Dic, env } from '..'
+import { _, Action, Apps, env } from '..'
 import docs from './docs'
 import route from './route'
 import html from './tpl/html'
@@ -9,12 +9,12 @@ let BASE = 'cgi', SEP = '.'
 // 添加action文件
 const actions = () => {
 
-  const files = fg.sync('apps/**/action.js', { cwd: process.env.NODE_PATH })
+  const files = fg.sync('apps*/**/action.js', { cwd: process.env.NODE_PATH })
 
   _.forEach(files, filename => {
 
     const file = require(filename).default as Action
-    const group = filename.replace(/apps\/(.*?)\/.*/, '$1')
+    const group = _.startCase(filename.replace(/apps-?(.*?)\/(.*?)\/.*/, '$1$2'))
 
     // 遍历当前action下所有的路由
     _.forEach(file, (v, path) => {
@@ -66,7 +66,7 @@ const actionDoc = () => {
 
 export default new class {
 
-  attach (base: string, sep: string, apps: Dic<string>) {
+  attach (base: string, sep: string, apps: Apps) {
 
     if (!base.startsWith('/')) base = '/' + base
     if (!base.endsWith(sep)) base = base + sep
