@@ -32,10 +32,10 @@ export default new class {
     _.forEach(tags, (content, key) => {
       if (typeof content === 'object')
         _.forEach(content, (content1, key1) => {
-          docs.tags.push({ name: `${key} ${key1}`, description: content1 })
+          docs.tags.push({ name: _.startCase(`${key} ${key1}`), description: content1 })
         })
       else
-        docs.tags.push({ name: key, description: content })
+        docs.tags.push({ name: _.startCase(key), description: content })
     })
   }
 
