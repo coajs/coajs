@@ -18,4 +18,4 @@ export interface Context extends ContextExtend, Koa.Context {
 
 export interface ContextExt extends Context {}
 
-export type Apps = Dic<string | Dic<string>>
+export type Apps = Dic<Dic<string>>

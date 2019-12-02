@@ -14,7 +14,6 @@ import $ from './coa-helper'
 export { _, $, moment, axios, BigNumber, HashIds }
 
 // serve相关
-export { default as action } from './bin-action'
 export { default as serve } from './bin-serve'
 export { JsonState } from './bin-serve/libs/JsonState'
 

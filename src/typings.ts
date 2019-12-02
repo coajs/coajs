@@ -1,5 +1,5 @@
-export * from './bin-action/typings'
 export * from './bin-serve/typings'
+export * from './bin-serve-action/typings'
 export * from './coa-env/typings'
 export * from './coa-db-mysql/typings'
 import * as Axios from 'axios'

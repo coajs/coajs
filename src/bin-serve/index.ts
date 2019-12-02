@@ -1,5 +1,6 @@
 import * as Koa from 'koa'
-import { _, action, Apps, env } from '..'
+import { _, Apps, env } from '..'
+import action from '../bin-serve-action'
 import life from '../life'
 import bin from './bin'
 import middleware from './middleware'
@@ -15,10 +16,10 @@ export default async (opt: { base?: string, sep?: string, apps: Apps, started?: 
   await life.created()
 
   // 初始化路由
-  action.attach(option.base, option.sep, option.apps)
+  const routes = action(option.base, option.sep, option.apps)
 
   // 初始化koa中间件
-  middleware(koa)
+  middleware(koa, routes)
 
   const port = parseInt(process.env.PORT as string) || 8000
   koa.listen(port, async () => {

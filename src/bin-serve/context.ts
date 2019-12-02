@@ -26,6 +26,12 @@ export default {
     return new JsonState()
   },
 
+  get realOrigin (this: Context) {
+    const protocol = this.header['x-client-scheme'] || this.header['x-scheme'] || this.protocol
+    const host = this.header['ali-swift-stat-host'] || this.host.replace(':8081', '')
+    return protocol + '://' + host
+  },
+
   input (this: Context, name: string) {
     return this.headers[name.toLowerCase()] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
   },
