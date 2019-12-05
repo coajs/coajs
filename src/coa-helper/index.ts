@@ -113,6 +113,44 @@ export default new class {
     return ave.dp(2).toNumber()
   }
 
+  // 将所有键转换为camelCase风格
+  camelCaseKeys (data: any) {
+    if (_.isPlainObject(data)) {
+      const result = {} as any
+      _.forEach(data, (v, k) => {
+        k = _.camelCase(k)
+        v = this.camelCaseKeys(v)
+        result[k] = v
+      })
+      return result
+    } else if (_.isArray(data)) {
+      return _.map(data, v => {
+        v = this.camelCaseKeys(v)
+        return v
+      })
+    } else
+      return data
+  }
+
+  // 将所有键转换为snakeCase风格
+  snakeCaseKeys (data: any) {
+    if (_.isPlainObject(data)) {
+      const result = {} as any
+      _.forEach(data, (v, k) => {
+        k = _.snakeCase(k)
+        v = this.snakeCaseKeys(v)
+        result[k] = v
+      })
+      return result
+    } else if (_.isArray(data)) {
+      return _.map(data, v => {
+        v = this.snakeCaseKeys(v)
+        return v
+      })
+    } else
+      return data
+  }
+
   // 判断汉字长度
   stringLength (str: string) {
     return str.replace(/[^\x00-\xff]/g, '01').length
