@@ -2,6 +2,7 @@ export * from './bin-serve/typings'
 export * from './bin-serve-action/typings'
 export * from './coa-env/typings'
 export * from './coa-db-mysql/typings'
+export * from './coa-secure/typings'
 import * as Axios from 'axios'
 
 declare type Basic = string | number | boolean | null | Date | undefined

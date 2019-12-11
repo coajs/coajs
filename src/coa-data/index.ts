@@ -27,7 +27,6 @@ export default new class {
     // 遍历数据，将数据附加到list
     _.forEach(list, v => {
       const id = _.get(v, key)
-      if (!id) return
       if (_.isArray(id)) {
         const newArray = id.map(v => data[v] || value)
         _.set(v, extend, newArray)

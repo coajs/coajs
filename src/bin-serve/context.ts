@@ -1,4 +1,4 @@
-import { $, _, Context, DataSet, echo, JsonState, secure } from '..'
+import { $, _, Context, echo, JsonState, secure, Session } from '..'
 
 export default {
 
@@ -7,17 +7,17 @@ export default {
   get session () {
     const ctx = this as Context
     return {
-      get (name: string): DataSet {
+      get (name: string) {
         if (!ctx.session_store) {
           const session_string = ctx.input(name.toLowerCase()) || ''
           ctx.session_store = secure.session_decode(session_string) || {}
         }
-        return ctx.session_store
+        return ctx.session_store as Session
       },
-      set (name: string, value: DataSet, ms: number, cookie = false) {
-        const session = secure.session_encode(value, ms)
-        cookie && ctx.cookies.set(name.toLowerCase(), session, { maxAge: ms, httpOnly: false, secure: false })
-        return session
+      set (name: string, value: Session, ms: number, cookie = false) {
+        const session_string = secure.session_encode(value, ms)
+        cookie && ctx.cookies.set(name.toLowerCase(), session_string, { maxAge: ms, httpOnly: false, secure: false })
+        return session_string
       },
     }
   },
@@ -32,8 +32,9 @@ export default {
     return protocol + '://' + host
   },
 
-  input (this: Context, name: string) {
-    return this.headers[name.toLowerCase()] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
+  input<T = string> (this: Context, name: string) {
+    const result = this.headers[name.toLowerCase()] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
+    return result as T | undefined
   },
 
   required<T> (this: Context, id: string, value: T) {

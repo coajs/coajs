@@ -125,7 +125,7 @@ export default new class {
     return JSON.stringify([expire, value])
   }
 
-  private decode (value: string, time: number) {
+  private decode (value: string | null, time: number) {
     if (!value) return undefined
     try {
       const data = JSON.parse(value)

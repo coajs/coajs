@@ -1,23 +1,26 @@
 import * as crypto from 'crypto'
-import { BinaryLike, createHash, createHmac, HexBase64BinaryEncoding, HexBase64Latin1Encoding, Utf8AsciiBinaryEncoding } from 'crypto'
-import { _, DataSet } from '..'
+import * as querystring from 'querystring'
+import * as zlib from 'zlib'
+import { _, Dic, Session } from '..'
+
+const SESSION_SECRET = 'SESSION_SECRET_FOR_COA_FRAMEWORK'
 
 export default new class {
 
-  sha1 (data: BinaryLike, digest: HexBase64Latin1Encoding = 'hex') {
-    return createHash('sha1').update(data).digest(digest)
+  sha1 (data: crypto.BinaryLike, digest: crypto.HexBase64Latin1Encoding = 'hex') {
+    return crypto.createHash('sha1').update(data).digest(digest)
   }
 
-  md5 (data: BinaryLike, digest: HexBase64Latin1Encoding = 'hex') {
-    return createHash('md5').update(data).digest(digest)
+  md5 (data: crypto.BinaryLike, digest: crypto.HexBase64Latin1Encoding = 'hex') {
+    return crypto.createHash('md5').update(data).digest(digest)
   }
 
-  sha1_hmac (str: BinaryLike, key: string, digest: HexBase64Latin1Encoding = 'hex') {
-    return createHmac('sha1', key).update(str).digest(digest)
+  sha1_hmac (str: crypto.BinaryLike, key: string, digest: crypto.HexBase64Latin1Encoding = 'hex') {
+    return crypto.createHmac('sha1', key).update(str).digest(digest)
   }
 
-  sha256_hmac (str: BinaryLike, key: string, digest: HexBase64Latin1Encoding = 'hex') {
-    return createHmac('sha256', key).update(str).digest(digest)
+  sha256_hmac (str: crypto.BinaryLike, key: string, digest: crypto.HexBase64Latin1Encoding = 'hex') {
+    return crypto.createHmac('sha256', key).update(str).digest(digest)
   }
 
   base64_encode (str: string) {
@@ -32,9 +35,9 @@ export default new class {
     return Buffer.from(base64, 'base64').toString()
   }
 
-  aes_encode (data: any, key = '', iv = ''): string {
+  aes_encode (data: any, key = '', iv = '') {
     if (!data) return ''
-    let clearEncoding: Utf8AsciiBinaryEncoding = 'utf8', cipherEncoding: HexBase64BinaryEncoding = 'base64', cipherChunks = [] as string[]
+    let clearEncoding: crypto.Utf8AsciiBinaryEncoding = 'utf8', cipherEncoding: crypto.HexBase64BinaryEncoding = 'base64', cipherChunks = [] as string[]
     let cipher = crypto.createCipheriv('aes-256-ecb', key, iv)
     cipher.setAutoPadding(true)
     cipherChunks.push(cipher.update(data, clearEncoding, cipherEncoding))
@@ -42,9 +45,9 @@ export default new class {
     return cipherChunks.join('')
   }
 
-  aes_decode (data: any, key = '', iv = ''): string {
+  aes_decode (data: any, key = '', iv = '') {
     if (!data) return ''
-    let clearEncoding: Utf8AsciiBinaryEncoding = 'utf8', cipherEncoding: HexBase64BinaryEncoding = 'base64', cipherChunks = [] as string[]
+    let clearEncoding: crypto.Utf8AsciiBinaryEncoding = 'utf8', cipherEncoding: crypto.HexBase64BinaryEncoding = 'base64', cipherChunks = [] as string[]
     let decipher = crypto.createDecipheriv('aes-256-ecb', key, iv)
     decipher.setAutoPadding(true)
     cipherChunks.push(decipher.update(data, cipherEncoding, clearEncoding))
@@ -52,29 +55,57 @@ export default new class {
     return cipherChunks.join('')
   }
 
-  session_encode (info: DataSet, maxAge: number) {
-    const value = JSON.stringify(info)
-    const time = _.toString(_.now() + maxAge).substr(0, 10)
-    const sign = this.md5(time + value).substr(-8)
-    return this.base64_encode(sign + time + value)
+  base64_compress (base64_string: string) {
+    const replacer = { '/': '_', '+': '-', '=': '' } as Dic<string>
+    return base64_string.replace(/[\/+=]/g, x => replacer[x])
+  }
+
+  base64_decompress (base64_string: string) {
+    const replacer = { '_': '/', '-': '+' } as Dic<string>
+    return base64_string.replace(/[_-]/g, x => replacer[x])
+  }
+
+  brotli_compress (raw_string: string) {
+    const base64 = zlib.brotliCompressSync(Buffer.from(raw_string, 'utf8')).toString('base64')
+    return this.base64_compress(base64)
+  }
+
+  brotli_decompress (encode_string: string) {
+    try {
+      const base64 = this.base64_decompress(encode_string)
+      return zlib.brotliDecompressSync(Buffer.from(base64, 'base64')).toString('utf8')
+    } catch (e) {
+      return ''
+    }
+  }
+
+  session_encode (info: Session, ms: number) {
+    const value = querystring.stringify(info)
+    const expire = _.toString(_.now() + ms).substr(0, 10)
+    const sign = this.sha1_hmac(expire + value, SESSION_SECRET, 'base64').substr(0, 6)
+    return this.brotli_compress(sign + expire + value)
   }
 
   session_decode (str: string) {
 
-    str = this.base64_decode(str)
+    str = this.brotli_decompress(str)
 
-    const sign = str.substr(0, 8)
-    const time = _.toNumber(str.substr(8, 10))
-    const value = str.substr(18)
-
-    if (time * 1000 >= _.now() && sign === this.md5(time + value).substr(-8)) {
-      try {
-        return JSON.parse(value)
-      } catch (e) {
-        return null
-      }
-    } else
+    if (!str)
       return null
-  }
 
+    const expire = _.toNumber(str.substr(6, 10))
+
+    if (expire * 1000 < _.now())
+      return null
+
+    const value = str.substr(16)
+    const sign = str.substr(0, 6)
+    const real_sign = this.sha1_hmac(expire + value, SESSION_SECRET, 'base64').substr(0, 6)
+
+    if (sign !== real_sign)
+      return null
+
+    return querystring.parse(value) as Session
+
+  }
 }
