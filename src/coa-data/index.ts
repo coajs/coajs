@@ -17,12 +17,8 @@ export default new class {
       else ids.push(id)
     })
 
-    // 如果数据不存在，直接返回
-    if (ids.length < 1)
-      return
-
     // 根据ID列表通过worker获取数据
-    const data = await worker(ids)
+    const data = ids.length < 1 ? {} : await worker(ids)
 
     // 遍历数据，将数据附加到list
     _.forEach(list, v => {
