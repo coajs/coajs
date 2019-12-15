@@ -1595,6 +1595,11 @@ picomatch@^2.0.5:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.0.7.tgz#514169d8c7cd0bdbeecc8a2609e34a7163de69f6"
   integrity sha512-oLHIdio3tZ0qH76NybpeneBhYVj0QFTfXEFTc/B3zKQspYfYYkWYgFsmzo+4kvId/bQRcNkVeguI3y+CD22BtA==
 
+pomelo-protobuf@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/pomelo-protobuf/-/pomelo-protobuf-0.4.0.tgz#e45e9a0a446eb18667e0c6e13eeb53d47addbda8"
+  integrity sha1-5F6aCkRusYZn4MbhPutT1Hrdvag=
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.npmjs.org/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"

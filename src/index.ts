@@ -22,6 +22,7 @@ export { default as env } from './coa-env'
 export { default as echo } from './coa-echo'
 export { default as die } from './coa-die'
 export { default as secure } from './coa-secure'
+export { default as sls } from './coa-sls'
 
 // 数据库相关
 export { default as redis } from './coa-db-redis/redis'

@@ -1,6 +1,6 @@
 {
   "name": "coajs",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,6 +31,7 @@
     "moment": "^2.24.0",
     "mongodb": "^3.4.0",
     "mysql": "^2.17.1",
+    "pomelo-protobuf": "^0.4.0",
     "source-map-support": "^0.5.16",
     "tslib": "^1.10.0"
   },

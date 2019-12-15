@@ -24,6 +24,14 @@ export default {
     prefix: '',
     trace: false
   },
+  sls: {
+    enable: false,
+    endpoint: '',
+    project: '',
+    store: 'aaa',
+    accessId: 'LTAI4Fr1xFY36ThwzVKkqTgH',
+    accessKey: 'Eg02rdV23TT1VaH8ONmxKSa7wgw8Pk',
+  },
   docs: {
     path: '/doc',
     filter: false,
