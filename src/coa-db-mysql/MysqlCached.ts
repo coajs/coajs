@@ -1,4 +1,4 @@
-import { _, cache, DataSet, MysqlNative, secure } from '..'
+import { _, cache, DataSet, Dic, MysqlNative, secure } from '..'
 import { Page, Query, SafePartial, Transaction } from './typings'
 
 export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
@@ -81,13 +81,22 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     return await cache.warp(this.cacheNsp('data'), cacheId, () => super.selectIdPageList(page, query, trx))
   }
 
+  protected async mGetCountBy (field: string, ids: string[], trx?: Transaction) {
+    return await cache.mWarp(this.cacheNsp('count', field), ids, async ids => {
+      const rows = await this.table(trx).select(`${field} as id`).count(`${this.key} as count`).whereIn(field, ids).groupBy(field) as any[]
+      const result = {} as Dic<number>
+      _.forEach(rows, ({ id, count }) => result[id] = count)
+      return result
+    })
+  }
+
   protected pickResult<T> (data: T, pick: string[]) {
     if (!data) return null
     return _.pick(data, pick) as T
   }
 
-  protected cacheNsp (nsp: string) {
-    return this.name + ':' + nsp
+  protected cacheNsp (...nsp: string[]) {
+    return this.name + ':' + nsp.join(':')
   }
 
   protected cacheFinger (data: DataSet, ...data2: DataSet[]) {
@@ -112,7 +121,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     let has = true
     const resultList = [] as SafePartial<Scheme>[]
     if (data) {
-      has = _.some(this.indexes, i => !!(data as any)[i])
+      has = _.some(this.cachesFields, i => !!(data as any)[i])
       resultList.push(data)
     }
     if (has) {
@@ -126,13 +135,21 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     const deleteIds = [] as CacheDelete[]
     deleteIds.push([this.cacheNsp('id'), ids])
     deleteIds.push([this.cacheNsp('data'), []])
-    this.indexes.forEach(i => {
+    this.caches.index.forEach(i => {
       const ids = [] as string[]
       dataList.forEach(data => {
         const dataId = (data as any)[i] as string || ''
         dataId && ids.push(dataId)
       })
       ids.length && deleteIds.push([this.cacheNsp(i), ids])
+    })
+    this.caches.count.forEach(i => {
+      const ids = [] as string[]
+      dataList.forEach(data => {
+        const dataId = (data as any)[i] as string || ''
+        dataId && ids.push(dataId)
+      })
+      ids.length && deleteIds.push([this.cacheNsp('count', i), ids])
     })
     await cache.mDelete(deleteIds)
   }

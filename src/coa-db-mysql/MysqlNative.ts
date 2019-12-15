@@ -10,7 +10,8 @@ export class MysqlNative<Scheme> {
   protected readonly name: string
   protected readonly scheme: any
   protected readonly pick: string[]
-  protected readonly indexes = [] as string[]
+  protected readonly caches = {} as { index: string[], count: string[] }
+  protected readonly cachesFields = [] as string[]
   protected readonly columns = [] as string[]
   protected readonly jsons = [] as string[]
 
@@ -19,7 +20,8 @@ export class MysqlNative<Scheme> {
     this.scheme = option.scheme
     this.name = _.snakeCase(name)
     this.pick = option.pick
-    this.indexes = option.indexes || []
+    this.caches = _.defaults(option.caches, { index: [], count: [] })
+    this.cachesFields = _.uniq([...this.caches.index, ...this.caches.count])
     // 处理unpick
     const unpick = option.unpick || []
     unpick.forEach(u => delete (option.scheme as any)[u])

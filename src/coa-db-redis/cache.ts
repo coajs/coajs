@@ -22,7 +22,8 @@ export default new class {
 
   // 批量设置
   async mSet (nsp: string, values: Dic<any>, ms: number = ms_ttl) {
-    ms > 0 || die.hint('cache hash ms 必须大于0')
+    ms > 0 || die.error('cache hash ms 必须大于0')
+    _.keys(values).length > 0 || die.error('cache hash values值的数量 必须大于0')
     const expire = _.now() + ms
     const data = {} as Dic<any>
     _.forEach(values, (v, k) => data[k] = this.encode(v, expire))
@@ -64,7 +65,10 @@ export default new class {
     })
 
     if (newIds.length) {
-      const newResult = await worker(newIds)
+      const newResult = await worker(newIds) as any
+      _.forEach(newIds, id => {
+        if (!newResult[id]) newResult[id] = null
+      })
       ms > 0 && await this.mSet(nsp, newResult, ms)
       _.extend(result, newResult)
     }
