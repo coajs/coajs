@@ -21,7 +21,7 @@ export class MysqlNative<Scheme> {
     this.name = _.snakeCase(name)
     this.pick = option.pick
     this.caches = _.defaults(option.caches, { index: [], count: [] })
-    this.cachesFields = _.uniq([...this.caches.index, ...this.caches.count])
+    this.cachesFields = _.uniq([...this.caches.index, ...this.caches.count.map(v => v.split(':')[0])])
     // 处理unpick
     const unpick = option.unpick || []
     unpick.forEach(u => delete (option.scheme as any)[u])

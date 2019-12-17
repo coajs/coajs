@@ -90,6 +90,16 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     })
   }
 
+  protected async getCountBy (field: string, value: string, query?: Query, trx?: Transaction) {
+    return await cache.warp(this.cacheNsp('count', field), value, async () => {
+      const qb = this.table(trx).count(`${this.key} as count`)
+      typeof query === 'function' ? query(qb) : qb.where(field, value)
+      const rows = await qb
+      const { count } = rows[0] as any || {}
+      return count || 0
+    })
+  }
+
   protected pickResult<T> (data: T, pick: string[]) {
     if (!data) return null
     return _.pick(data, pick) as T
@@ -145,11 +155,14 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     })
     this.caches.count.forEach(i => {
       const ids = [] as string[]
+      const keys = i.split(/[:,]/)
+      const key = keys[0]
       dataList.forEach(data => {
-        const dataId = (data as any)[i] as string || ''
+        const dataId = (data as any)[key] as string || ''
         dataId && ids.push(dataId)
       })
-      ids.length && deleteIds.push([this.cacheNsp('count', i), ids])
+      keys.slice(1).forEach(k => ids.push(k))
+      ids.length && deleteIds.push([this.cacheNsp('count', key), ids])
     })
     await cache.mDelete(deleteIds)
   }
