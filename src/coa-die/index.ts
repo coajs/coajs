@@ -18,7 +18,28 @@ class ContextFail extends Error {
   }
 }
 
+class ContextOk extends Error {
+  public body: any
+  public type: string
+
+  constructor (value: any, type: 'json' | 'html') {
+    super()
+    this.name = 'ContextOk'
+    this.type = type
+    this.body = value
+  }
+}
+
 export default new class {
+
+  jsonOk (body: any): never {
+    throw new ContextOk(body, 'json')
+  }
+
+  htmlOk (body: any): never {
+    throw new ContextOk(body, 'html')
+  }
+
   hint (message: string, code: number = 400, mark: number | string = 0): never {
     throw new ContextFail({ code, mark, message, tips: true })
   }

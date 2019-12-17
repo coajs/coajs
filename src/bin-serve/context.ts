@@ -65,20 +65,14 @@ export default {
   },
 
   jsonAnyFail (this: Context, e: any) {
-
-    const info = e.info || {}
-
-    // 打印错误
-    if (!info.tips) {
-      const errorInfo = e.stack || e.toString() || ''
-      echo.error(errorInfo)
-    }
-
-    if (info.code && info.message) {// 自定义错误
-      this.jsonFail(info.message, info.code, info.mark)
-    } else {// 其他错误
+    if (e.name === 'ContextOk') {
+      e.type === 'json' ? this.jsonOk(e.body) : this.htmlOk(e.body)
+    } else if (e.name === 'ContextFailError') {
+      const info = e.info || {}
+      info.tips || echo.error(e.stack || e.toString() || '')
+      this.jsonFail(info.message || '未知错误', info.code || 400, info.mark)
+    } else
       this.jsonFail(e.toString(), 500)
-    }
   },
 
   htmlOk (this: Context, content: string) {
