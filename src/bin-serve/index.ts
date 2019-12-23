@@ -1,6 +1,6 @@
 import * as Koa from 'koa'
 import { _, Apps, env } from '..'
-import action from '../bin-serve-action'
+import route from '../bin-serve-route'
 import life from '../life'
 import bin from './bin'
 import middleware from './middleware'
@@ -16,7 +16,7 @@ export default async (opt: { base?: string, sep?: string, apps: Apps, started?: 
   await life.created()
 
   // 初始化路由
-  const routes = action(option.base, option.sep, option.apps)
+  const routes = route(option.base, option.sep, option.apps)
 
   // 初始化koa中间件
   middleware(koa, routes)

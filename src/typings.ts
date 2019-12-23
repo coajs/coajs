@@ -1,5 +1,5 @@
 export * from './bin-serve/typings'
-export * from './bin-serve-action/typings'
+export * from './bin-serve-route/typings'
 export * from './coa-env/typings'
 export * from './coa-db-mysql/typings'
 export * from './coa-secure/typings'
