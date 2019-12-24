@@ -1,6 +1,6 @@
 import HashIds from 'hashids'
 import { _, uuid } from '..'
-import binMysql from './binMysql'
+import binMysql from './bin'
 
 const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
