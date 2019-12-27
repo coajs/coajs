@@ -1,4 +1,4 @@
-import { $, _, Dic, env } from '..'
+import { $, _, Dic, echo, env } from '..'
 import bin from './bin'
 
 export default new class {
@@ -7,7 +7,7 @@ export default new class {
   private queue = [] as any[]
   private isWorking = false
 
-  async log (store: string, data: Dic<string>) {
+  async log (store: string, data: Dic<string | number>) {
     if (!bin.enable) return
     this.queue.push({ store, data, time: _.now() })
     this.init().then()
@@ -34,11 +34,12 @@ export default new class {
         { key: 'env', value: env.runEnv },
       ]
       _.forEach(queue.data, (value: any, key: string) => {
+        if (typeof value !== 'string') try {value = JSON.stringify(value)} catch (e) {value = ''}
         contents.push({ key, value })
       })
       logs.push({ time, contents })
     })
-    await bin.logs(logs)
+    await bin.logs(logs).catch(e => {echo.error('* SLS上报错误: [%s] %s', '预处理错误', e.toString())})
     return true
   }
 

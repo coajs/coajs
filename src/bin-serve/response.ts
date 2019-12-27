@@ -7,11 +7,11 @@ function reportLog (ctx: Context, start_time: number) {
   const origin = ctx.realOrigin
   const url = ctx.url
   const path = ctx.path
-  const query = ctx.query
-  const code = _.toString(body.code || 0)
-  const mark = _.toString(body.mark || 0)
+  const query = ctx.querystring
+  const code = body.code || 0
+  const mark = body.mark || 0
   const message = body.message || ''
-  const duration = _.toString(Date.now() - start_time)
+  const duration = Date.now() - start_time
   sls.log('access', { method, origin, path, query, url, code, mark, message, duration }).then().catch(_.noop)
 }
 
