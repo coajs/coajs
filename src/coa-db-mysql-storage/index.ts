@@ -10,7 +10,7 @@ const pick = ['key', 'value', 'expire']
 export default new class extends MysqlCached<typeof scheme> {
 
   constructor () {
-    super('AacStorage', { scheme, pick })
+    super({ name: 'AacStorage', scheme, pick })
   }
 
   async get<T> (key: string) {

@@ -14,7 +14,7 @@ const pick = ['queueId', 'name', 'data', 'times']
 export default new class extends MysqlNative<typeof scheme> {
 
   constructor () {
-    super('AacQueue', { scheme, pick })
+    super({ name: 'AacQueue', scheme, pick })
   }
 
   async pop () {

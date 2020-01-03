@@ -1,4 +1,4 @@
-import { _, cache, DataSet, Dic, MysqlNative, secure } from '..'
+import { _, cache, DataSet, Dic, die, MysqlNative, secure } from '..'
 import { Page, Query, SafePartial, Transaction } from './typings'
 
 export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
@@ -44,6 +44,10 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     if (result)
       await this.cacheDeleteWork(ids, dataList)
     return result
+  }
+
+  async checkById (id: string, pick = this.columns, trx?: Transaction, ms?: number) {
+    return await this.getById(id, pick, trx, ms) || die.hint(`${this.title || this.name}不存在`)
   }
 
   async getById (id: string, pick = this.columns, trx?: Transaction, ms?: number) {

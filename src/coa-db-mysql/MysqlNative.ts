@@ -8,6 +8,7 @@ export class MysqlNative<Scheme> {
 
   protected readonly key: string
   protected readonly name: string
+  protected readonly title: string
   protected readonly scheme: any
   protected readonly pick: string[]
   protected readonly caches = {} as { index: string[], count: string[] }
@@ -15,10 +16,11 @@ export class MysqlNative<Scheme> {
   protected readonly columns = [] as string[]
   protected readonly jsons = [] as string[]
 
-  constructor (name: string, option: ModelOption<Scheme>) {
+  constructor (option: ModelOption<Scheme>) {
     // 处理基本数据
     this.scheme = option.scheme
-    this.name = _.snakeCase(name)
+    this.name = _.snakeCase(option.name)
+    this.title = option.title || ''
     this.pick = option.pick
     this.caches = _.defaults(option.caches, { index: [], count: [] })
     this.cachesFields = _.uniq([...this.caches.index, ...this.caches.count.map(v => v.split(':')[0])])
