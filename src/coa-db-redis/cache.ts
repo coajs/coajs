@@ -48,7 +48,7 @@ export default new class {
   // 获取
   async warp<T> (nsp: string, id: string, worker: () => Promise<T>, ms = ms_ttl) {
     let result = await this.get(nsp, id)
-    if (!result) {
+    if (result === undefined) {
       result = await worker()
       ms > 0 && await this.set(nsp, id, result, ms)
     }
@@ -116,7 +116,7 @@ export default new class {
   // 清空缓存
   async clear (nsp: string = '*') {
     const keys = await redis.keys(this.key(nsp))
-    return await redis.del(...keys)
+    return keys.length ? await redis.del(...keys) : 0
   }
 
   // 设置nsp
