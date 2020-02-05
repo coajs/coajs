@@ -1,19 +1,19 @@
-import { $, _, Context, echo, secure, Session } from '..'
+import { $, _, Context, Dic, echo, secure, Session } from '..'
 import { JsonState } from './libs/JsonState'
 
 export default {
 
-  session_store: null as any,
+  session_store: {} as Dic<Session>,
 
-  get session () {
-    const ctx = this as Context
+  get session (this: Context) {
+    const ctx = this
     return {
       get (name: string) {
-        if (!ctx.session_store) {
+        if (!ctx.session_store[name]) {
           const session_string = ctx.input(name.toLowerCase()) || ''
-          ctx.session_store = secure.session_decode(session_string) || {}
+          ctx.session_store[name] = secure.session_decode(session_string) || {}
         }
-        return ctx.session_store as Session
+        return ctx.session_store[name]
       },
       set (name: string, value: Session, ms: number, cookie = false) {
         const session_string = secure.session_encode(value, ms)

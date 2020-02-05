@@ -1,6 +1,6 @@
 import HashIds from 'hashids'
 import { _, uuid } from '..'
-import binMysql from './bin'
+import bin from './bin'
 
 const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
@@ -22,7 +22,7 @@ export default new class {
   }
 
   async series (nsp: string) {
-    return await binMysql.newNo(nsp)
+    return await bin.newNo(nsp)
   }
 
   async saltId () {
@@ -59,11 +59,11 @@ export default new class {
   }
 
   private async newNo (key1: number) {
-    return await binMysql.newNo(nspId + key1)
+    return await bin.newNo(nspId + key1)
   }
 
   private async clearNo (key1: number) {
-    await binMysql.clearNo(nspId + key1)
+    await bin.clearNo(nspId + key1)
   }
 
 }
