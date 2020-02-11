@@ -98,7 +98,7 @@ export class MysqlNative<Scheme> {
     const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     if (result === 0) {
       _.defaults(data, { [this.key]: id, created: time })
-      await this.table(trx).insert(data)
+      await this.table(trx).insert(this.fill(data, true))
     }
     return result
   }

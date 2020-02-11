@@ -38,13 +38,11 @@ export default {
   },
 
   required<T> (this: Context, id: string, value: T) {
-    const data = this.header[id] || this.request.body[id] || this.query[id] || undefined
-    return $.checkParam(id, value, data, true)
+    return $.checkParam(id, value, this.input(id), true)
   },
 
   have<T> (this: Context, id: string, value: T) {
-    const data = this.header[id] || this.request.body[id] || this.query[id] || undefined
-    return $.checkParam(id, value, data, false)
+    return $.checkParam(id, value, this.input(id), false)
   },
 
   page (this: Context) {
