@@ -140,7 +140,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     }
     if (has) {
       const data = await this.mGetByIds(ids, this.columns, trx, 0)
-      resultList.concat(_.values(data))
+      resultList.push(..._.values(data))
     }
     return resultList
   }
