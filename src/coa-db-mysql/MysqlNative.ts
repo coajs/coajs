@@ -9,6 +9,7 @@ export class MysqlNative<Scheme> {
   protected readonly key: string
   protected readonly name: string
   protected readonly title: string
+  protected readonly prefix: string
   protected readonly scheme: any
   protected readonly pick: string[]
   protected readonly caches = {} as { index: string[], count: string[], [name: string]: string[] }
@@ -21,6 +22,7 @@ export class MysqlNative<Scheme> {
     this.scheme = option.scheme
     this.name = _.snakeCase(option.name)
     this.title = option.title || ''
+    this.prefix = option.prefix || ''
     this.pick = option.pick
     this.caches = _.defaults(option.caches, { index: [], count: [] })
     // 将需要用到缓存的字段单独记录为一个数组，方便判断是否需要处理缓存
@@ -202,15 +204,15 @@ export class MysqlNative<Scheme> {
 
   // 计数
   protected async count (query: Query, trx?: Transaction) {
-    const qb = this.table(trx).count(this.name + '.id as count')
+    const qb = this.table(trx).count({ result: this.name + '.id' })
     query(qb)
-    const ret = (await qb)[0] as Dic<number> || {}
-    return ret.count || 0
+    const ret = (await qb)[0] || {}
+    return ret.result || 0
   }
 
   // 获取ID
   protected async newId () {
-    return await uuid.hexId()
+    return this.prefix + await uuid.hexId()
   }
 
   // 从数据库获取之后补全数据
