@@ -61,7 +61,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
   }
 
   async getIdBy (field: string, value: string | number, trx?: Transaction) {
-    return await cache.warp(this.cacheNsp(field), '' + value, () => super.getIdBy(field, value, trx))
+    return await cache.warp(this.cacheNsp('index', field), '' + value, () => super.getIdBy(field, value, trx))
   }
 
   async mGetByIds (ids: string[], pick = this.pick, trx?: Transaction, ms?: number) {
@@ -149,24 +149,19 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     const deleteIds = [] as CacheDelete[]
     deleteIds.push([this.cacheNsp('id'), ids])
     deleteIds.push([this.cacheNsp('data'), []])
-    this.caches.index.forEach(i => {
-      const ids = [] as string[]
-      dataList.forEach(data => {
-        const dataId = (data as any)[i] as string || ''
-        dataId && ids.push(dataId)
+    _.forEach(this.caches, (items, name) => {
+      // name可能为index,count,或自定义
+      items.forEach(item => {
+        const keys = item.split(/[:,]/)
+        const key = keys[0]
+        const ids = [] as string[]
+        dataList.forEach(data => {
+          const dataId = (data as any)[key] as string || ''
+          dataId && ids.push(dataId)
+        })
+        ids.push(...keys.slice(1))
+        ids.length && deleteIds.push([this.cacheNsp(name, key), ids])
       })
-      ids.length && deleteIds.push([this.cacheNsp(i), ids])
-    })
-    this.caches.count.forEach(i => {
-      const ids = [] as string[]
-      const keys = i.split(/[:,]/)
-      const key = keys[0]
-      dataList.forEach(data => {
-        const dataId = (data as any)[key] as string || ''
-        dataId && ids.push(dataId)
-      })
-      keys.slice(1).forEach(k => ids.push(k))
-      ids.length && deleteIds.push([this.cacheNsp('count', key), ids])
     })
     await cache.mDelete(deleteIds)
   }

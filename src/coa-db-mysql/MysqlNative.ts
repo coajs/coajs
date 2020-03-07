@@ -11,7 +11,7 @@ export class MysqlNative<Scheme> {
   protected readonly title: string
   protected readonly scheme: any
   protected readonly pick: string[]
-  protected readonly caches = {} as { index: string[], count: string[] }
+  protected readonly caches = {} as { index: string[], count: string[], [name: string]: string[] }
   protected readonly cachesFields = [] as string[]
   protected readonly columns = [] as string[]
   protected readonly jsons = [] as string[]
@@ -23,7 +23,11 @@ export class MysqlNative<Scheme> {
     this.title = option.title || ''
     this.pick = option.pick
     this.caches = _.defaults(option.caches, { index: [], count: [] })
-    this.cachesFields = _.uniq([...this.caches.index, ...this.caches.count.map(v => v.split(':')[0])])
+    // 将需要用到缓存的字段单独记录为一个数组，方便判断是否需要处理缓存
+    _.forEach(this.caches, items => items.forEach(item => {
+      const field = item.split(/[:,]/)[0]
+      this.cachesFields.indexOf(field) < 0 && this.cachesFields.push(field)
+    }))
     // 处理unpick
     const unpick = option.unpick || []
     unpick.forEach(u => delete (option.scheme as any)[u])
