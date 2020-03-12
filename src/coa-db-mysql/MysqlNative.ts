@@ -141,18 +141,18 @@ export class MysqlNative<Scheme> {
     await this.table(trx).truncate()
   }
 
+  // 获取table对象
+  table (trx?: Transaction) {
+    const table = mysql<Scheme>(this.name)
+    trx && table.transacting(trx)
+    return table
+  }
+
   // 通过某个字段查询ID
   protected async getIdBy (field: string, value: string | number, trx?: Transaction) {
     const result = await this.table(trx).select(this.key).where(field, value)
     const data = result[0] as Dic<string> || {}
     return data[this.key] || ''
-  }
-
-  // 获取table对象
-  protected table (trx?: Transaction) {
-    const table = mysql<Scheme>(this.name)
-    trx && table.transacting(trx)
-    return table
   }
 
   // 查询ID格式全部列表
