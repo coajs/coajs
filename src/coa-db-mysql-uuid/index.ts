@@ -5,7 +5,7 @@ import bin from './bin'
 const hexIds = new HashIds('UUID-HEX', 12, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 const store = { key1: 0, key2: 0, key3: 0, lock: false }
-const nsp = 'ID:', nspDuration = 24 * 3600 * 1000, maxIndex = 9990
+const nsp = 'ID:', nspDuration = 24 * 3600 * 1000, maxIndex = 8900
 
 export default new class {
 
@@ -38,6 +38,9 @@ export default new class {
 
   async hexId () {
     const saltId = await this.saltId()
+    // 稍微补数，控制在13以上位
+    saltId[1] += 100
+    saltId[2] += 1000
     return hexIds.encode(saltId)
   }
 
