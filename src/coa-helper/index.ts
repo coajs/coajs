@@ -1,4 +1,4 @@
-import { _, BigNumber, die, moment } from '..'
+import { _, BigNumber, dayjs, die } from '..'
 
 export default new class {
 
@@ -97,8 +97,8 @@ export default new class {
 
   // 时间日期格式化
   datetime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
-    // http://momentjs.com/docs/#/displaying/
-    return moment(time || new Date()).format(format)
+    // https://day.js.org/docs/zh-CN/display/format
+    return dayjs(time || new Date()).format(format)
   }
 
   // 计算平均值

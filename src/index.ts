@@ -6,12 +6,12 @@ export * from './typings'
 // 常用工具
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
+import * as dayjs from 'dayjs'
 import HashIds from 'hashids'
 import * as _ from 'lodash'
-import * as moment from 'moment'
 import $ from './coa-helper'
 
-export { _, $, moment, axios, BigNumber, HashIds }
+export { _, $, dayjs, axios, BigNumber, HashIds }
 
 // serve相关
 export { default as serve } from './bin-serve'
