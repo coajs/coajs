@@ -22,8 +22,8 @@ export class MysqlNative<Scheme> {
     this.scheme = option.scheme
     this.name = _.snakeCase(option.name)
     this.title = option.title || ''
-    this.prefix = option.prefix || ''
-    this.pick = option.pick
+    this.prefix = option.prefix || option.name.substr(0, 3).toLowerCase()
+    this.pick = option.pick || []
     this.caches = _.defaults(option.caches, { index: [], count: [] })
     // 将需要用到缓存的字段单独记录为一个数组，方便判断是否需要处理缓存
     _.forEach(this.caches, items => items.forEach(item => {
@@ -38,7 +38,7 @@ export class MysqlNative<Scheme> {
       if (typeof v === 'object') this.jsons.push(k)
       this.columns.push(k)
     })
-    // 设置第一个column值为主键
+    // 如果key没有定义，则设置第一个column值为主键
     this.key = option.key || this.columns[0]
   }
 
