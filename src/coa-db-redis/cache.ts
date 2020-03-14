@@ -2,7 +2,7 @@ import { _, Dic, die, env } from '..'
 import redis from './redis'
 
 const ms_ttl = 30 * 24 * 3600 * 1000
-const prefix = _.toLower(env.redis.prefix) || 'red0'
+const prefix = _.toLower(env.redis.prefix) || 'coa-d0'
 
 declare global {
   type CacheDelete = [string, string[]]
@@ -98,8 +98,9 @@ export default new class {
     return await pipeline.exec()
   }
 
-  // 删除
-  async clean () {
+  // 清除无效的缓存
+  async clearUseless () {
+    const now = _.now()
     const keys1 = await redis.keys(this.key('*'))
     for (const i1 in keys1) {
       const key1 = keys1[i1]
@@ -108,14 +109,14 @@ export default new class {
         const key2 = keys2[i2]
         const value = await redis.hget(key1, key2) || ''
         const expire = _.toInteger(value.substr(1, 13))
-        if (expire < _.now()) await redis.hdel(key1, key2)
+        if (expire < now) await redis.hdel(key1, key2)
       }
     }
   }
 
-  // 清空缓存
-  async clear (nsp: string = '*') {
-    const keys = await redis.keys(this.key(nsp))
+  // 清楚指定命名空间的缓存
+  async clear (nsp: string = '') {
+    const keys = await redis.keys(this.key(nsp + '*'))
     return keys.length ? await redis.del(...keys) : 0
   }
 
