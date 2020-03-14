@@ -7,16 +7,16 @@ const get_series = () => ++series
 class Lock {
   private readonly id: string
   private readonly value: string
-  private readonly px: number
+  private readonly ms: number
 
-  constructor (id: string, px = 2000) {
+  constructor (id: string, ms: number) {
     this.id = env.redis.prefix + ':lock:' + secure.md5(id)
     this.value = env.hostname + get_series() + _.random(true)
-    this.px = px
+    this.ms = ms
   }
 
   async lock () {
-    return await redis.set(this.id, this.value, 'PX', this.px, 'NX')
+    return await redis.set(this.id, this.value, 'PX', this.ms, 'NX')
   }
 
   async unlock () {
@@ -27,9 +27,9 @@ class Lock {
 
 export default {
   // 开始共享阻塞锁事务
-  async start<T> (id: string, worker: () => Promise<T>, px = 2000) {
+  async start<T> (id: string, worker: () => Promise<T>, ms = 2000) {
 
-    const lock = new Lock(id, px)
+    const lock = new Lock(id, ms)
 
     // 判断是否能锁上，如果不能锁上，则等待锁被释放
     while (!await lock.lock()) {
