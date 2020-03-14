@@ -2,10 +2,10 @@ import HashIds from 'hashids'
 import { _, uuid } from '..'
 import bin from './bin'
 
-const hexIds = new HashIds('UUID-HEX', 16, '0123456789abcdef')
+const hexIds = new HashIds('UUID-HEX', 12, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 const store = { key1: 0, key2: 0, key3: 0, lock: false }
-const nspDuration = 24 * 3600 * 1000, nspId = 'ID:', maxIndex = 9990
+const nsp = 'ID:', nspDuration = 24 * 3600 * 1000, maxIndex = 9990
 
 export default new class {
 
@@ -21,8 +21,8 @@ export default new class {
     store.lock = false
   }
 
-  async series (nsp: string) {
-    return await bin.newNo(nsp)
+  async series (nsp: string, key: string | number = '') {
+    return await bin.newNo(nsp, key)
   }
 
   async saltId () {
@@ -46,24 +46,16 @@ export default new class {
     return hashIds.encode(saltId)
   }
 
-  protected getKey1 () {
+  private getKey1 () {
     return _.toInteger(_.now() / nspDuration)
   }
 
   private async newKeys () {
     const key1 = this.getKey1()
-    const key2 = await this.newNo(key1)
+    const key2 = await bin.newNo(nsp, key1)
     if (key2 === 1)
-      await this.clearNo(key1 - 3)
+      await bin.clearUseless(nsp, key1 - 3)
     return [key1, key2, 0]
-  }
-
-  private async newNo (key1: number) {
-    return await bin.newNo(nspId + key1)
-  }
-
-  private async clearNo (key1: number) {
-    await bin.clearNo(nspId + key1)
   }
 
 }
