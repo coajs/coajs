@@ -1,9 +1,8 @@
 {
   "name": "coajs",
-  "version": "1.0.93",
+  "version": "1.0.94",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "keywords": [
     "coajs"
   ],
@@ -17,7 +16,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
-    "coajs-types": "^1.0.9",
+    "coajs-types": "^1.0.10",
     "fast-glob": "^3.2.2",
     "hashids": "1",
     "ioredis": "^4.16.0",

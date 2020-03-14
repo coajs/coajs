@@ -84,10 +84,10 @@
   resolved "https://registry.npmjs.org/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
   integrity sha512-PGAK759pxyfXE78NbKxyfRcWYA/KwW17X290cNev/qAsn9eQIxkH4shoNBafH37wewhDG/0p1cHPbK6+SzZjWQ==
 
-"@types/ioredis@^4.14.8":
-  version "4.14.8"
-  resolved "https://registry.npmjs.org/@types/ioredis/-/ioredis-4.14.8.tgz#6dea9b8ed72f33847a97569582e737d93a1eee4e"
-  integrity sha512-ww38Psb0jj/8h9UYjRuT9RYF46E5O3j+03XSEBx6OQvCIkgPV52kF8DshVLh8DMSZs3fEjeoEzmyM3KP9n53tQ==
+"@types/ioredis@^4.14.9":
+  version "4.14.9"
+  resolved "https://registry.npmjs.org/@types/ioredis/-/ioredis-4.14.9.tgz#774387d44d3ad60e1b849044b2b28b96e5813866"
+  integrity sha512-yNdzppM6vY4DYqXCnt4A3PXArxsMWeJCYxFlyl4AJKrNSGMEAP9TPcXR+8Q6zh9glcCtxmwMQhi4pwdqqHH3OA==
   dependencies:
     "@types/node" "*"
 
@@ -169,10 +169,15 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@^13.9.0":
+"@types/node@*":
   version "13.9.0"
   resolved "https://registry.npmjs.org/@types/node/-/node-13.9.0.tgz#5b6ee7a77faacddd7de719017d0bc12f52f81589"
   integrity sha512-0ARSQootUG1RljH2HncpsY2TJBfGQIKOOi7kxzUY6z54ePu/ZD+wJA8zI2Q6v8rol2qpG/rvqsReco8zNMPvhQ==
+
+"@types/node@^13.9.1":
+  version "13.9.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-13.9.1.tgz#96f606f8cd67fb018847d9b61e93997dabdefc72"
+  integrity sha512-E6M6N0blf/jiZx8Q3nb0vNaswQeEyn0XlupO+xN6DtJ6r6IT4nXrTry7zhIfYvFCl3/8Cu6WIysmUBKiqV0bqQ==
 
 "@types/range-parser@*":
   version "1.2.3"
@@ -384,20 +389,20 @@ co@^4.6.0:
   resolved "https://registry.npmjs.org/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
-coajs-types@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.npmjs.org/coajs-types/-/coajs-types-1.0.9.tgz#cbf1a89bae11885b01a4ed7bc5c72458bc4e2eb8"
-  integrity sha512-wy6UUvkba/SdU56UhiHTSfw4VCPO9pIlUmKnbKPa0/yfwWwONGzZPNDPqJwlOGoF9ybIoviRKf0cNjc5/Nxn0w==
+coajs-types@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.npmjs.org/coajs-types/-/coajs-types-1.0.10.tgz#54112f5bf9943d02de1fb99068ef26d2dd505f53"
+  integrity sha512-kbpp/+uF0J8OKl8dsRANAbJqQnnzC6We+msZK7I2nN5aITkwED4tJGkMwBptr9q9zllxQHtCGx9Q9fxPHma64A==
   dependencies:
     "@types/hashids" "^1.0.30"
-    "@types/ioredis" "^4.14.8"
+    "@types/ioredis" "^4.14.9"
     "@types/koa" "^2.11.2"
     "@types/koa-bodyparser" "^4.3.0"
     "@types/koa-morgan" "^1.0.4"
     "@types/koa-router" "^7.4.0"
     "@types/koa-static" "^4.0.1"
     "@types/lodash" "^4.14.149"
-    "@types/node" "^13.9.0"
+    "@types/node" "^13.9.1"
 
 collection-visit@^1.0.0:
   version "1.0.0"
