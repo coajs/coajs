@@ -6,9 +6,9 @@ export default (base: string, sep: string, urls: object[]) => `
 <head>
     <meta charset="UTF-8">
     <title>接口文档</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.24.3/favicon-32x32.png" sizes="32x32"/>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.24.3/favicon-16x16.png" sizes="16x16"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.24.3/swagger-ui.css">
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.25.0/favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.25.0/favicon-16x16.png" sizes="16x16"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.25.0/swagger-ui.css">
     <style>
         html {
             box-sizing: border-box;
@@ -77,7 +77,7 @@ export default (base: string, sep: string, urls: object[]) => `
         }
         
         /* 隐藏地址第一个字母 */
-        .swagger-ui .opblock-summary .opblock-summary-path a:first-letter {
+        .swagger-ui .opblock-summary .opblock-summary-path a:first-letter ,.swagger-ui .opblock-summary .opblock-summary-path__deprecated a:first-letter{
             font-size: ${sep === '/' ? 'inherit' : 0};
         }
               
@@ -103,7 +103,7 @@ export default (base: string, sep: string, urls: object[]) => `
         }
         
         /* 接口标题字体 */
-        .swagger-ui .opblock .opblock-summary-method, .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-description {
+        .swagger-ui .opblock .opblock-summary-method, .swagger-ui .opblock .opblock-summary-path,.swagger-ui .opblock .opblock-summary-path__deprecated, .swagger-ui .opblock .opblock-summary-description {
             font-size: 14px;
         }
 
@@ -146,8 +146,8 @@ export default (base: string, sep: string, urls: object[]) => `
 </head>
 <body>
 <div id="swagger-ui"></div>
-<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.24.3/swagger-ui-bundle.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.24.3/swagger-ui-standalone-preset.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.25.0/swagger-ui-bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.25.0/swagger-ui-standalone-preset.js"></script>
 <script>
     window.onload = function () {
 
