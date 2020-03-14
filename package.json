@@ -18,7 +18,6 @@
     "axios": "^0.19.2",
     "bignumber.js": "^9.0.0",
     "coajs-types": "^1.0.9",
-    "colors": "^1.4.0",
     "fast-glob": "^3.2.2",
     "hashids": "1",
     "ioredis": "^4.16.0",
