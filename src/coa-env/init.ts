@@ -17,7 +17,7 @@ const runEnvName = runEnv
   .replace(/v\d/, 'Release')
 
 try {
-  version = fs.readFileSync('static/version', { encoding: 'utf8' })
+  version = fs.readFileSync('static/version', { encoding: 'utf8' }).split('\n')[0]
 } catch (e) {}
 
 const mods = {} as Dic<boolean>
