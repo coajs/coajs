@@ -13,7 +13,6 @@ declare module 'koa' {
 
 export interface Context extends ContextExtend, Koa.Context {
   params: { [index: string]: string },
-  filename: string
 }
 
 export interface ContextExt extends Context {}

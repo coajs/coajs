@@ -7,7 +7,7 @@ export default {
     const ctx = this
     return {
       get (name: string) {
-        const session_name = 'session-store-' + name
+        const session_name = 'aac-session-store-' + name
         if (!ctx.state[session_name]) {
           const session_string = ctx.input(name.toLowerCase()) || ''
           ctx.state[session_name] = secure.session_decode(session_string) || {}
@@ -82,17 +82,20 @@ export default {
     this.status = status
   },
 
+  // 将buffer直接显示而不是下载
   bufferShowOk (this: Context, body: string | Buffer, type: string) {
     this.body = body
     this.type = type
   },
 
+  // 将buffer当做文件下载
   bufferDownOk (this: Context, body: string | Buffer, filename: string) {
     this.body = body
     this.attachment(filename)
   },
 
+  // 下载文件
   fileDownOk (this: Context, filename: string) {
-    this.filename = filename
+    this.state['aac-file-down-name'] = filename
   }
 }

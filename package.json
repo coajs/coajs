@@ -31,7 +31,6 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mysql": "^2.18.1",
-    "pomelo-protobuf": "^0.4.0",
     "source-map-support": "^0.5.16",
     "ts-watch": "^1.0.8",
     "tslib": "^1.11.1"

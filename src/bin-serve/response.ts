@@ -1,39 +1,29 @@
 import * as send from 'koa-send'
-import { _, Context, sls } from '..'
-
-function reportLog (ctx: Context, start_time: number) {
-  const body = _.isPlainObject(ctx.body) ? ctx.body : {}
-  const method = ctx.method
-  const origin = ctx.realOrigin
-  const url = ctx.url
-  const path = ctx.path
-  const query = ctx.querystring
-  const code = body.code || 0
-  const mark = body.mark || 0
-  const message = body.message || ''
-  const duration = Date.now() - start_time
-  sls.log('access', { method, origin, path, query, url, code, mark, message, duration }).then().catch(_.noop)
-}
+import { Context } from '..'
 
 export default () => async (ctx: Context, next: () => Promise<void>) => {
-  const start_time = Date.now()
   try {
     await next()
+    // 如果内容为空，且上级应用没有接管respond
     if (ctx.respond !== false && !ctx.response.body) {
-      if (ctx.filename) {
+      // 判断是否是下载文件
+      const download_filename = ctx.state['aac-file-down-name']
+      if (download_filename) {
         try {
-          ctx.attachment(ctx.filename)
-          await send(ctx, ctx.filename)
+          ctx.attachment(download_filename)
+          await send(ctx, download_filename)
         } catch (e) {
           ctx.jsonFail(e.toString())
         }
-      } else if (ctx.response.status === 404)
+      }
+      // 判断是不是路由不存在
+      else if (ctx.response.status === 404)
         ctx.jsonFail('Not Found: ' + ctx.request.url, 404)
+      // 其他未知错误
       else
         ctx.jsonFail('Unknown Server Error', 500)
     }
   } catch (e) {
     ctx.jsonAnyFail(e)
   }
-  sls.enable && reportLog(ctx, start_time)
 }
