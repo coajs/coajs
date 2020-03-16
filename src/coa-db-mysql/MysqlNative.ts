@@ -16,6 +16,7 @@ export class MysqlNative<Scheme> {
   protected readonly cachesFields = [] as string[]
   protected readonly columns = [] as string[]
   protected readonly jsons = [] as string[]
+  protected readonly virtual = [] as string[]
 
   constructor (option: ModelOption<Scheme>) {
     // 处理基本数据
@@ -36,6 +37,7 @@ export class MysqlNative<Scheme> {
     // 处理columns
     _.forEach(this.scheme as any, (v, k: string) => {
       if (typeof v === 'object') this.jsons.push(k)
+      if (k.startsWith('v_')) this.virtual.push(k)
       this.columns.push(k)
     })
     // 如果key没有定义，则设置第一个column值为主键
@@ -240,6 +242,9 @@ export class MysqlNative<Scheme> {
     this.jsons.forEach(k => {
       if (typeof result[k] === 'object')
         result[k] = JSON.stringify(result[k])
+    })
+    this.virtual.forEach(k => {
+      delete result[k]
     })
     return result as T
   }
