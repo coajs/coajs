@@ -5,7 +5,10 @@ import bin from './bin'
 const hexIds = new HashIds('UUID-HEX', 12, '0123456789abcdef')
 const hashIds = new HashIds('UUID-HASH', 12, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 const store = { key1: 0, key2: 0, key3: 0, lock: false }
-const nsp = 'ID:', nspDuration = 24 * 3600 * 1000, maxIndex = 8900
+
+// hexIds进位阈值为 11 121 1331 14641 161051 1771561 19487171
+// key3每次添加10000冗余进位，key1每天变化
+const nsp = 'ID:', durationKey1 = 24 * 3600 * 1000, maxKey3 = 161051 - 14641 - 10000
 
 export default new class {
 
@@ -29,8 +32,8 @@ export default new class {
     // 预保存数据
     const result = [store.key1, store.key2, ++store.key3]
     // 某些时机下会异步更新
-    if (store.key3 > maxIndex || store.key1 !== this.getKey1()) {
-      uuid.init().then()
+    if (store.key3 > maxKey3 || store.key1 !== this.getKey1()) {
+      await uuid.init()
     }
     // 返回结果
     return result
@@ -38,9 +41,10 @@ export default new class {
 
   async hexId () {
     const saltId = await this.saltId()
-    // 稍微补数，控制在13以上位
-    saltId[1] += 100
-    saltId[2] += 1000
+    // 稍微补数，控制在16位
+    saltId[0] += 1331
+    saltId[1] += 1331
+    saltId[2] += 14641
     return hexIds.encode(saltId)
   }
 
@@ -50,7 +54,8 @@ export default new class {
   }
 
   private getKey1 () {
-    return _.toInteger(_.now() / nspDuration)
+    // 当前时间减去2020年01月01日(1577808000000)，保证36年内(2056年)不会进位
+    return _.toInteger((_.now() - 1577808000000) / durationKey1)
   }
 
   private async newKeys () {
