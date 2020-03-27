@@ -10,6 +10,7 @@ export class MysqlNative<Scheme> {
   protected readonly name: string
   protected readonly title: string
   protected readonly prefix: string
+  protected readonly database: string
   protected readonly scheme: any
   protected readonly pick: string[]
   protected readonly caches = {} as { index: string[], count: string[], [name: string]: string[] }
@@ -21,6 +22,7 @@ export class MysqlNative<Scheme> {
   constructor (option: ModelOption<Scheme>) {
     // 处理基本数据
     this.scheme = option.scheme
+    this.database = option.database || ''
     this.name = _.snakeCase(option.name)
     this.title = option.title || ''
     this.prefix = option.prefix || option.name.substr(0, 3).toLowerCase()
@@ -36,7 +38,7 @@ export class MysqlNative<Scheme> {
     unpick.forEach(u => delete (option.scheme as any)[u])
     // 处理columns
     _.forEach(this.scheme as any, (v, k: string) => {
-      if (typeof v === 'object') this.jsons.push(k)
+      if (v && typeof v === 'object') this.jsons.push(k)
       if (k.startsWith('v_')) this.virtual.push(k)
       this.columns.push(k)
     })
@@ -146,6 +148,7 @@ export class MysqlNative<Scheme> {
   // 获取table对象
   table (trx?: Transaction) {
     const table = mysql<Scheme>(this.name)
+    this.database && table.withSchema(this.database)
     trx && table.transacting(trx)
     return table
   }

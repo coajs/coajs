@@ -69,8 +69,10 @@ export default {
       const info = e.info || {}
       info.tips || echo.error(e.stack || e.toString() || '')
       this.jsonFail(info.message || '未知错误', info.code || 400, info.mark)
-    } else
+    } else {
       this.jsonFail(e.toString(), 500)
+      echo.error(e.stack || e.toString() || '')
+    }
   },
 
   htmlOk (this: Context, content: string) {

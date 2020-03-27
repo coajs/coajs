@@ -98,7 +98,7 @@ export default new class {
   // 时间日期格式化
   datetime (format = 'YYYY-MM-DD HH:mm:ss', time ?: number) {
     // https://day.js.org/docs/zh-CN/display/format
-    return dayjs(time || new Date()).format(format)
+    return dayjs(time).format(format)
   }
 
   // 计算平均值
