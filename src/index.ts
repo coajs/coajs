@@ -13,9 +13,6 @@ import $ from './coa-helper'
 
 export { _, $, dayjs, axios, BigNumber, HashIds }
 
-// serve相关
-export { default as serve } from './bin-serve'
-
 // core相关
 export { default as env } from './coa-env'
 export { default as echo } from './coa-echo'
@@ -35,3 +32,6 @@ export { default as uuid } from './coa-db-mysql-uuid'
 export { default as lock } from './coa-db-redis-lock'
 export { default as storage } from './coa-db-mysql-storage'
 export { Queue } from './coa-queue'
+
+// serve相关
+export { default as serve } from './bin-serve'

@@ -1,17 +1,19 @@
 import { _, Dic, mysql, uuid } from '..'
 import { ModelOption, Page, Query, SafePartial, Transaction } from './typings'
 
-const DefaultPageRows = 20
-const MaxPageRows = 1000
+const DefaultPageRows = 20, MaxPageRows = 1000
+const DefaultMS = 30 * 24 * 3600 * 1000
 
 export class MysqlNative<Scheme> {
 
   protected readonly key: string
   protected readonly name: string
   protected readonly title: string
+  protected readonly scheme: any
   protected readonly prefix: string
   protected readonly database: string
-  protected readonly scheme: any
+  protected readonly increment: string
+  protected readonly ms: number
   protected readonly pick: string[]
   protected readonly caches = {} as { index: string[], count: string[], [name: string]: string[] }
   protected readonly cachesFields = [] as string[]
@@ -21,19 +23,22 @@ export class MysqlNative<Scheme> {
 
   constructor (option: ModelOption<Scheme>) {
     // 处理基本数据
-    this.scheme = option.scheme
-    this.database = option.database || ''
     this.name = _.snakeCase(option.name)
     this.title = option.title || ''
+    this.scheme = option.scheme
+    this.database = option.database || ''
+    this.increment = option.increment || 'id'
+    this.ms = option.ms || DefaultMS
     this.prefix = option.prefix || option.name.substr(0, 3).toLowerCase()
-    this.pick = option.pick || []
+    // 处理caches
     this.caches = _.defaults(option.caches, { index: [], count: [] })
     // 将需要用到缓存的字段单独记录为一个数组，方便判断是否需要处理缓存
     _.forEach(this.caches, items => items.forEach(item => {
       const field = item.split(/[:,]/)[0]
       this.cachesFields.indexOf(field) < 0 && this.cachesFields.push(field)
     }))
-    // 处理unpick
+    // 处理pick unpick
+    this.pick = option.pick || []
     const unpick = option.unpick || []
     unpick.forEach(u => delete (option.scheme as any)[u])
     // 处理columns
@@ -164,7 +169,7 @@ export class MysqlNative<Scheme> {
   protected async selectIdList (query: Query, trx?: Transaction) {
     const qb = this.table(trx).select(this.name + '.' + this.key)
     query(qb)
-    qb.orderBy(this.name + '.id', 'desc')
+    qb.orderBy(this.name + '.' + this.increment, 'desc')
     return await qb as Scheme[]
   }
 
@@ -176,7 +181,7 @@ export class MysqlNative<Scheme> {
     const qb = this.table(trx).select(this.name + '.' + this.key)
     query(qb)
     qb.limit(rows + 1).offset(last)
-    qb.orderBy(this.name + '.id', 'desc')
+    qb.orderBy(this.name + '.' + this.increment, 'desc')
     const list = await qb as Scheme[]
 
     if (list.length === rows + 1) {
@@ -193,7 +198,7 @@ export class MysqlNative<Scheme> {
   protected async selectFirst (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
-    qb.orderBy(this.name + '.id', 'desc')
+    qb.orderBy(this.name + '.' + this.increment, 'desc')
     const first = await qb.first()
     return this.result(first, pick)
   }
@@ -202,17 +207,16 @@ export class MysqlNative<Scheme> {
   protected async selectList (query: Query, pick = this.pick, trx?: Transaction) {
     const qb = this.table(trx).select(pick)
     query(qb)
-    qb.orderBy(this.name + '.id', 'desc')
+    qb.orderBy(this.name + '.' + this.increment, 'desc')
     const list = await qb
     return list.map(v => this.result(v, pick) as Scheme) || []
   }
 
   // 计数
   protected async count (query: Query, trx?: Transaction) {
-    const qb = this.table(trx).count({ result: this.name + '.id' })
+    const qb = this.table(trx).count({ result: this.name + '.' + this.increment })
     query(qb)
-    const ret = (await qb)[0] || {}
-    return ret.result || 0
+    return (await qb)[0]?.result || 0
   }
 
   // 获取ID

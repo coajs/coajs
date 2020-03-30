@@ -46,11 +46,11 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     return result
   }
 
-  async checkById (id: string, pick = this.columns, trx?: Transaction, ms?: number) {
+  async checkById (id: string, pick = this.columns, trx?: Transaction, ms = this.ms) {
     return await this.getById(id, pick, trx, ms) || die.hint(`${this.title || this.name}不存在`)
   }
 
-  async getById (id: string, pick = this.columns, trx?: Transaction, ms?: number) {
+  async getById (id: string, pick = this.columns, trx?: Transaction, ms = this.ms) {
     const result = await cache.warp(this.cacheNsp('id'), id, () => super.getById(id, this.columns, trx), ms)
     return this.pickResult(result, pick)
   }
@@ -64,7 +64,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     return await cache.warp(this.cacheNsp('index', field), '' + value, () => super.getIdBy(field, value, trx))
   }
 
-  async mGetByIds (ids: string[], pick = this.pick, trx?: Transaction, ms?: number) {
+  async mGetByIds (ids: string[], pick = this.pick, trx?: Transaction, ms = this.ms) {
     const result = await cache.mWarp(this.cacheNsp('id'), ids, ids => super.mGetByIds(ids, this.columns, trx), ms)
     _.forEach(result, (v, k) => result[k] = this.pickResult(v, pick))
     return result
@@ -87,7 +87,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
 
   protected async mGetCountBy (field: string, ids: string[], trx?: Transaction) {
     return await cache.mWarp(this.cacheNsp('count', field), ids, async ids => {
-      const rows = await this.table(trx).select(`${field} as id`).count(`${this.key} as count`).whereIn(field, ids).groupBy(field) as any[]
+      const rows = await this.table(trx).select({ id: field }).count({ count: this.key }).whereIn(field, ids).groupBy(field) as any[]
       const result = {} as Dic<number>
       _.forEach(rows, ({ id, count }) => result[id] = count)
       return result
@@ -96,11 +96,10 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
 
   protected async getCountBy (field: string, value: string, query?: Query, trx?: Transaction) {
     return await cache.warp(this.cacheNsp('count', field), value, async () => {
-      const qb = this.table(trx).count(`${this.key} as count`)
+      const qb = this.table(trx).count({ count: this.key })
       typeof query === 'function' ? query(qb) : qb.where(field, value)
       const rows = await qb
-      const { count } = rows[0] as any || {}
-      return count || 0
+      return rows[0]?.count || 0
     })
   }
 
