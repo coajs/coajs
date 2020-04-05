@@ -21,7 +21,6 @@ export class CronTime {
 
     // 默认开始时间为当前，默认截止时间为2099年
     this.start = option.start || Date.now()
-    this.start = Math.round(this.start / 1000) * 1000
     this.deadline = option.deadline || 4070880000000
 
     // 开始解析表达式
