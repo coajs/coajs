@@ -1,8 +1,7 @@
-import { $, _, env, secure } from '..'
+import { $, _, die, env, secure } from '..'
 import redis from '../coa-db-redis/redis'
 
-let series = 0
-const get_series = () => ++series
+const D = { series: 0 }
 
 class Lock {
   private readonly id: string
@@ -10,8 +9,8 @@ class Lock {
   private readonly ms: number
 
   constructor (id: string, ms: number) {
-    this.id = env.redis.prefix + ':lock:' + secure.md5(id)
-    this.value = env.hostname + get_series() + _.random(true)
+    this.id = env.redis.prefix + '-aac-lock-' + secure.md5(id)
+    this.value = env.hostname + (++D.series) + _.random(true)
     this.ms = ms
   }
 
@@ -25,7 +24,8 @@ class Lock {
 
 }
 
-export default {
+export default new class {
+
   // 开始共享阻塞锁事务
   async start<T> (id: string, worker: () => Promise<T>, ms = 2000) {
 
@@ -33,8 +33,23 @@ export default {
 
     // 判断是否能锁上，如果不能锁上，则等待锁被释放
     while (!await lock.lock()) {
-      await $.timeout(100)
+      await $.timeout(200)
     }
+
+    // 执行操作，无论是否成功均释放锁
+    return await worker().finally(() => {
+      lock.unlock().then()
+    })
+
+  }
+
+  // 尝试事务，如果正在进行则直接报错
+  async try<T> (id: string, worker: () => Promise<T>, ms = 2000) {
+
+    const lock = new Lock(id, ms)
+
+    // 判断是否能锁上，如果不能锁上，则直接报错
+    await lock.lock() || die.hint('Running')
 
     // 执行操作，无论是否成功均释放锁
     return await worker().finally(() => {

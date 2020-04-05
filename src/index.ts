@@ -29,9 +29,10 @@ export { MysqlCached } from './coa-db-mysql/MysqlCached'
 // 数据相关
 export { default as data } from './coa-data'
 export { default as uuid } from './coa-db-mysql-uuid'
-export { default as lock } from './coa-db-redis-lock'
 export { default as storage } from './coa-db-mysql-storage'
-export { Queue } from './coa-queue'
+export { default as lock } from './coa-db-redis-lock'
+export { Queue } from './coa-db-redis-queue'
+export { Cron } from './coa-db-redis-cron'
 
 // serve相关
 export { default as serve } from './bin-serve'

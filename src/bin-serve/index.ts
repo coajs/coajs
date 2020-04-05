@@ -5,15 +5,18 @@ import life from '../life'
 import bin from './bin'
 import middleware from './middleware'
 
-export default async (opt: { base?: string, sep?: string, apps: Apps, started?: () => void }) => {
+export default async (options: { apps: Apps, base?: string, sep?: string }, event: { onStarted?: () => void, onTimer?: () => void } = {}) => {
 
   bin.showBootInfo()
 
-  const option = _.defaults(opt, { base: 'cgi', sep: '.', app: {}, started: _.noop })
+  const option = _.defaults(options, { base: 'cgi', sep: '.', app: {} })
+
+  if (event.onStarted) life.onAppStarted = event.onStarted
+  if (event.onTimer) life.onAppTimer = event.onTimer
 
   const koa = new Koa()
 
-  await life.created()
+  await life.onCreated()
 
   // 初始化路由
   const routes = route(option.base, option.sep, option.apps)
@@ -24,8 +27,7 @@ export default async (opt: { base?: string, sep?: string, apps: Apps, started?: 
   const port = parseInt(process.env.PORT as string) || 8000
   koa.listen(port, async () => {
     bin.showBootInfo(port)
-    await life.started()
-    option.started()
+    await life.onStarted()
     env.started = true
   })
 

@@ -1,5 +1,6 @@
 import * as fg from 'fast-glob'
-import { _, Action, Apps, env } from '..'
+import { _, Action, Apps, echo, env } from '..'
+import life from '../life'
 import docs from './docs'
 import route from './route'
 import html from './tpl/html'
@@ -55,6 +56,11 @@ const doDocAction = (base: string, sep: string, apps: Apps) => {
   // 版本信息
   route.router.get(base + 'version', ctx => {
     ctx.body = env.version
+  })
+  // 时钟调用
+  route.router.get(base + 'timer', ctx => {
+    life.onTimer().then().catch(e => echo.error(e.toString()))
+    ctx.body = 'OK'
   })
   // 文档UI
   route.router.get(docPath, (ctx: any) => {
