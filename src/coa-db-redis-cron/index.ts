@@ -25,5 +25,5 @@ export class Cron {
   }
 
   // 当有新的任务的时候
-  protected onJob (id: string) {}
+  protected onJob (name: string) {}
 }

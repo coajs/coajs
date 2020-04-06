@@ -1,4 +1,4 @@
-import { _, echo, env, redis } from '..'
+import { $, _, echo, env, redis } from '..'
 
 const D = { lock: false }
 const prefix = env.redis.prefix + '-{aac-queue}-'
@@ -24,14 +24,19 @@ export class Queue {
 
     // 持续监听队列
     while (1) {
-      const jobId = await redis_queue.brpoplpush(key_pending, key_doing, 0)
-      await this.onReceive(jobId).catch(_.noop)
+      try {
+        const jobId = await redis_queue.brpoplpush(key_pending, key_doing, 0)
+        await this.onReceive(jobId)
+      } catch (e) {
+        echo.error(e)
+        await $.timeout(2000)
+      }
     }
   }
 
   // 推送新任务
-  async push (name: string, id: string) {
-    const jobId = name + sep + id
+  async push (name: string, id: string, data = '') {
+    const jobId = data.length ? (name + sep + id + sep + data) : (name + sep + id)
     echo.grey('* Queue: push new job %s', jobId)
     return await redis.lpush(key_pending, jobId)
   }
@@ -64,7 +69,7 @@ export class Queue {
   }
 
   // 任务具体工作者
-  protected async worker (name: string, data: string) {
+  protected async worker (name: string, id: string, data: string) {
 
   }
 
@@ -81,9 +86,9 @@ export class Queue {
     // 开始执行
     this.doingJobId = jobId
     echo.grey('* Queue: start job %s', jobId)
-    const [jobName, jobData] = jobId.split(sep)
-    await this.worker(jobName, jobData).catch(e => {
-      echo.error('* Queue JobError %s: %s', jobId, e.toString())
+    const [name, id, data] = jobId.split(sep)
+    await this.worker(name, id, data).catch(e => {
+      echo.error('* Queue JobError: %s %s', jobId, e.toString())
     })
 
     // 执行结束
