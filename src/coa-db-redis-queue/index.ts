@@ -12,15 +12,15 @@ export class Queue {
 
   doingJobId = ''
 
-  // 初始化任务
-  async init () {
+  // 初始化任务，interval为上报间隔，默认为10秒上报一次
+  async init (interval = 10e3) {
     if (D.lock) return
     D.lock = true
 
     const redis_queue = redis.duplicate()
 
     // 队列任务监听器
-    setInterval(() => this.interval().then().catch(_.noop), 10e3)
+    setInterval(() => this.interval().then().catch(_.noop), interval)
 
     // 持续监听队列
     while (1) {
@@ -36,12 +36,12 @@ export class Queue {
     return await redis.lpush(key_pending, jobId)
   }
 
-  // 检查队列
-  async retry () {
+  // 检查队列，force是否强制执行，timeout任务上报超时的时间，默认60秒，interval两次执行间隔，默认60秒
+  async retry (force = false, timeout = 60e3, interval = 60e3) {
     const now = _.now()
-    // 如果60秒内执行过，则忽略
-    const can = await redis.set(key_retrying, now, 'PX', 60e3, 'NX')
-    if (!can) return
+    // 如果60秒内执行过且没有强制执行，则忽略
+    const can = await redis.set(key_retrying, now, 'PX', interval, 'NX')
+    if (!can && !force) return
 
     const [[, doing = []], [, doing_map = {}]] = await redis.pipeline().lrange(key_doing, 0, -1).hgetall(key_doing_map).exec()
     const retryJobIds = [] as string[]
@@ -49,11 +49,11 @@ export class Queue {
     // 遍历map检查是否超时
     _.forEach(doing_map, (time, jobId) => {
       doing_map[jobId] = now - _.toInteger(time)
-      if (doing_map[jobId] > 60e3) retryJobIds.push(jobId)
+      if (doing_map[jobId] >= timeout) retryJobIds.push(jobId)
     })
     // 遍历doing检查是否超时
     _.forEach(doing, jobId => {
-      if (!doing_map[jobId] || doing_map[jobId] > 60e3) retryJobIds.push(jobId)
+      if (!doing_map[jobId] || doing_map[jobId] >= timeout) retryJobIds.push(jobId)
     })
 
     // 如果存在需要重试的任务
