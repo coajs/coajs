@@ -1,4 +1,4 @@
-export default {
+export const env_example = {
   mongo: {
     host: '',
     port: 27017,
@@ -32,5 +32,5 @@ export default {
       title: '平台接口文档',
       description: '平台接口文档，包含用户端和管理端'
     },
-  },
+  }
 }

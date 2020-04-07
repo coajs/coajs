@@ -32,8 +32,18 @@ export default {
     return protocol + '://' + host
   },
 
-  input<T = string> (this: Context, name: string) {
+  getInput<T = string> (this: Context, name: string) {
     const result = this.headers[name.toLowerCase()] || this.cookies.get(name) || this.params[name] || this.query[name] || this.request.body[name] || undefined
+    return result as T | undefined
+  },
+
+  getParam<T = string> (this: Context, name: string) {
+    const result = this.params[name] || this.query[name] || this.request.body[name] || undefined
+    return result as T | undefined
+  },
+
+  getHeader<T = string> (this: Context, name: string) {
+    const result = this.headers[name.toLowerCase()] || this.cookies.get(name) || undefined
     return result as T | undefined
   },
 
