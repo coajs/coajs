@@ -9,7 +9,7 @@ export default {
       get (name: string) {
         const session_name = 'aac-session-store-' + name
         if (!ctx.state[session_name]) {
-          const session_string = ctx.input(name.toLowerCase()) || ''
+          const session_string = ctx.getInput(name.toLowerCase()) || ''
           ctx.state[session_name] = secure.session_decode(session_string) || {}
         }
         return ctx.state[session_name]
@@ -48,11 +48,11 @@ export default {
   },
 
   required<T> (this: Context, id: string, value: T) {
-    return $.checkParam(id, value, this.input(id), true)
+    return $.checkParam(id, value, this.getParam(id), true)
   },
 
   have<T> (this: Context, id: string, value: T) {
-    return $.checkParam(id, value, this.input(id), false)
+    return $.checkParam(id, value, this.getParam(id), false)
   },
 
   page (this: Context) {
