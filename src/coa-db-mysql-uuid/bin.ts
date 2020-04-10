@@ -5,10 +5,9 @@ const tableName = 'aac_uuid'
 export default new class {
 
   // 生成新的唯一顺序码
-  async newNo (nsp: string, key: string | number) {
+  async newSeries (id: string) {
     if (!env.mysql.host) return 0
     return await mysql.transaction(async trx => {
-      const id = nsp + key
       const data = await trx(tableName).first('no').where({ id }).forUpdate() || {}
       const no = _.toInteger(data.no) + 1
       if (no === 1)
@@ -19,11 +18,21 @@ export default new class {
     })
   }
 
-  // 清除无用的数据
-  async clearUseless (nsp: string, key: string | number) {
-    return mysql(tableName).delete()
-      .where('id', 'LIKE', nsp + '%')
-      .where('id', '<', nsp + key)
+  // 生成每日唯一顺序码
+  async newDailySeries (day: number) {
+    const id = this.getDailyId(day)
+    const series = await this.newSeries(id)
+    // 如果为1，则删除以前的旧数据
+    if (series === 1) await mysql(tableName).delete()
+      .where('id', 'LIKE', 'ID%')
+      .where('id', '<', this.getDailyId(day - 3))
+    return series
+  }
+
+  // 每日唯一顺序码的ID
+  private getDailyId (day: number) {
+    const id = '000000' + day
+    return 'ID' + id.substr(-5)
   }
 
 }

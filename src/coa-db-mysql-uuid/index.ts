@@ -8,7 +8,7 @@ const store = { key1: 0, key2: 0, key3: 0, lock: false }
 
 // hexIds进位阈值为 11 121 1331 14641 161051 1771561 19487171
 // key3每次添加10000冗余进位，key1每天变化
-const nsp = 'ID:', durationKey1 = 24 * 3600 * 1000, maxKey3 = 161051 - 14641 - 10000
+const durationKey1 = 24 * 3600 * 1000, maxKey3 = 161051 - 14641 - 10000
 
 export default new class {
 
@@ -17,15 +17,13 @@ export default new class {
     if (store.lock)
       return
     store.lock = true
-    const [key1, key2, key3] = await this.newKeys()
-    store.key1 = key1
-    store.key2 = key2
-    store.key3 = key3
+    store.key1 = this.getKey1()
+    store.key2 = await bin.newDailySeries(store.key1)
     store.lock = false
   }
 
-  async series (nsp: string, key: string | number = '') {
-    return await bin.newNo(nsp, key)
+  async series (key: string) {
+    return await bin.newSeries(key)
   }
 
   async saltId () {
@@ -56,14 +54,6 @@ export default new class {
   private getKey1 () {
     // 当前时间减去2020年01月01日(1577808000000)，保证36年内(2056年)不会进位
     return _.toInteger((_.now() - 1577808000000) / durationKey1)
-  }
-
-  private async newKeys () {
-    const key1 = this.getKey1()
-    const key2 = await bin.newNo(nsp, key1)
-    if (key2 === 1)
-      await bin.clearUseless(nsp, key1 - 3)
-    return [key1, key2, 0]
   }
 
 }
