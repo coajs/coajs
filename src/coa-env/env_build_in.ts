@@ -4,8 +4,8 @@ import { Dic } from '..'
 // 处理基本信息
 const env = process.env || {}
 const runEnv = env.RUN_ENV || 'd0'
-const runEnvType = runEnv.substr(0, 1)
-const envNames = { d: 'alpha', t: 'beta', v: 'release' } as Dic<'alpha' | 'beta' | 'release'>
+const runEnvType = runEnv.substr(0, 1) as 'd' | 't' | 'v'
+const envNames = { d: 'alpha', t: 'beta', v: 'online' } as Dic<'alpha' | 'beta' | 'online'>
 
 // 构建
 export const env_build_in = {

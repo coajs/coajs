@@ -61,17 +61,17 @@
     "@types/node" "*"
 
 "@types/express-serve-static-core@*":
-  version "4.17.3"
-  resolved "https://registry.npmjs.org/@types/express-serve-static-core/-/express-serve-static-core-4.17.3.tgz#dc8068ee3e354d7fba69feb86b3dfeee49b10f09"
-  integrity sha512-sHEsvEzjqN+zLbqP+8OXTipc10yH1QLR+hnr5uw29gi9AhCAAAdri8ClNV7iMdrJrIzXIQtlkPvq8tJGhj3QJQ==
+  version "4.17.4"
+  resolved "https://registry.npmjs.org/@types/express-serve-static-core/-/express-serve-static-core-4.17.4.tgz#157c79c2d28b632d6418497c57c93185e392e444"
+  integrity sha512-dPs6CaRWxsfHbYDVU51VjEJaUJEcli4UI0fFMT4oWmgCvHj+j7oIxz5MLHVL0Rv++N004c21ylJNdWQvPkkb5w==
   dependencies:
     "@types/node" "*"
     "@types/range-parser" "*"
 
 "@types/express@*":
-  version "4.17.4"
-  resolved "https://registry.npmjs.org/@types/express/-/express-4.17.4.tgz#e78bf09f3f530889575f4da8a94cd45384520aac"
-  integrity sha512-DO1L53rGqIDUEvOjJKmbMEQ5Z+BM2cIEPy/eV3En+s166Gz+FeuzRerxcab757u/U4v4XF4RYrZPmqKa+aY/2w==
+  version "4.17.6"
+  resolved "https://registry.npmjs.org/@types/express/-/express-4.17.6.tgz#6bce49e49570507b86ea1b07b806f04697fac45e"
+  integrity sha512-n/mr9tZI83kd4azlPG5y997C/M4DNABK9yErhFM6hKdym4kkmd9j0vtsJyjFIwfRBxtrxZtAfGZCNRIBMFLK5w==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
@@ -176,10 +176,10 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@^13.11.0":
-  version "13.11.0"
-  resolved "https://registry.npmjs.org/@types/node/-/node-13.11.0.tgz#390ea202539c61c8fa6ba4428b57e05bc36dc47b"
-  integrity sha512-uM4mnmsIIPK/yeO+42F2RQhGUIs39K2RFmugcJANppXe6J1nvH87PvzPZYpza7Xhhs8Yn9yIAVdLZ84z61+0xQ==
+"@types/node@*", "@types/node@^13.11.1":
+  version "13.11.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-13.11.1.tgz#49a2a83df9d26daacead30d0ccc8762b128d53c7"
+  integrity sha512-eWQGP3qtxwL8FGneRrC5DwrJLGN4/dH1clNTuLfN81HCrxVtxRjygDTUoZJ5ASlDEeo0ppYFQjQIlXhtXpOn6g==
 
 "@types/qs@*":
   version "6.9.1"
@@ -375,10 +375,10 @@ co@^4.6.0:
   resolved "https://registry.npmjs.org/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
-coajs-types@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.npmjs.org/coajs-types/-/coajs-types-1.0.11.tgz#b8e9ccb178ab5edf0f5c08afbdd770b47ba05af6"
-  integrity sha512-UC93QUHZaX7vuVFPfc+jEJprcVrvr1C/I8t8rjg8EFVwUkUqvEKNyyG8cp2oPUeId1KFUn9TQLlV5I1HFTyBlQ==
+coajs-types@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.npmjs.org/coajs-types/-/coajs-types-1.0.12.tgz#3c2b9e89e9c0613c30df682b6cc729fd772d64e5"
+  integrity sha512-b1l9E6eYxKSXOz0beuMXXTyxbX3Ft/x2m/2uN8o+1fQw0uA51oUmGqF48BQteFV6+rgv2gothYYS46N5SkDNWA==
   dependencies:
     "@types/hashids" "^1.0.30"
     "@types/ioredis" "^4.14.9"
@@ -388,7 +388,7 @@ coajs-types@^1.0.11:
     "@types/koa-router" "^7.4.0"
     "@types/koa-static" "^4.0.1"
     "@types/lodash" "^4.14.149"
-    "@types/node" "^13.11.0"
+    "@types/node" "^13.11.1"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -457,10 +457,10 @@ cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-dayjs@^1.8.23:
-  version "1.8.23"
-  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.8.23.tgz#07b5a8e759c4d75ae07bdd0ad6977f851c01e510"
-  integrity sha512-NmYHMFONftoZbeOhVz6jfiXI4zSiPN6NoVWJgC0aZQfYVwzy/ZpESPHuCcI0B8BUMpSJQ08zenHDbofOLKq8hQ==
+dayjs@^1.8.24:
+  version "1.8.24"
+  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.8.24.tgz#2ef8a2ab9425eaf3318fe78825be1c571027488d"
+  integrity sha512-bImQZbBv86zcOWOq6fLg7r4aqMx8fScdmykA7cSh+gH1Yh8AM0Dbw0gHYrsOrza6oBBnkK+/OaR+UAa9UsMrDw==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
@@ -888,10 +888,10 @@ interpret@^2.0.0:
   resolved "https://registry.npmjs.org/interpret/-/interpret-2.0.0.tgz#b783ffac0b8371503e9ab39561df223286aa5433"
   integrity sha512-e0/LknJ8wpMMhTiWcjivB+ESwIuvHnBSlBbmP/pSb8CQJldoj1p2qv7xGZ/+BtbTziYRFSz8OsvdbiX45LtYQA==
 
-ioredis@^4.16.1:
-  version "4.16.1"
-  resolved "https://registry.npmjs.org/ioredis/-/ioredis-4.16.1.tgz#377c21d2a4fa8cc31fe9028c666f8dd16a6255bf"
-  integrity sha512-g76Mm9dE7BLuewncu1MimGZw5gDDjDwjoRony/VoSxSJEKAhuYncDEwYKYjtHi2NWsTNIB6XXRjE64uVa/wpKQ==
+ioredis@^4.16.2:
+  version "4.16.2"
+  resolved "https://registry.npmjs.org/ioredis/-/ioredis-4.16.2.tgz#29ae301885e493c4642d2fb1998761c576e27462"
+  integrity sha512-hlRK9q9K8pWpYIxUh079dWUWECiGNdI7+/AR21pgeqIBXQzjVKFnz0wXvmhEQZV3Hvv4saQpvJww9SkjwvPXZA==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.1.1"
@@ -1087,10 +1087,10 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-knex@^0.20.13:
-  version "0.20.13"
-  resolved "https://registry.npmjs.org/knex/-/knex-0.20.13.tgz#056c310d963f7efce1b3c7397576add1323f1146"
-  integrity sha512-YVl//Te0G5suc+d9KyeI6WuhtgVlxu6HXYQB+WqrccFkSZAbHqlqZlUMogYG3UoVq69c3kiFbbxgUNkrO0PVfg==
+knex@^0.20.14:
+  version "0.20.14"
+  resolved "https://registry.npmjs.org/knex/-/knex-0.20.14.tgz#607d46a067f37ba2ea50be9aa8fbffef9ff72d12"
+  integrity sha512-RUBIydapgYGguzuw/YQ3+9TPm6d1qkzEQ7XlmLdFuVkn6GsaZhDHSNX1ycInRZZT8j2blHb7YjTXgLKRCHMI0Q==
   dependencies:
     colorette "1.1.0"
     commander "^4.1.1"
