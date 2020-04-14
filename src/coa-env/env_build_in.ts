@@ -16,6 +16,7 @@ export const env_build_in = {
   cwd: process.cwd(),
   name: env.npm_package_name || '',
   isProd: env.NODE_ENV === 'production',
+  isOnline: runEnvType === 'v',
   hostname: env.HOSTNAME || 'local',
   version: env.npm_package_version || '',
   mods: {} as Dic<boolean>,

@@ -1,5 +1,5 @@
 import { _, Dic, mysql, uuid } from '..'
-import { ModelOption, Page, Query, SafePartial, Transaction } from './typings'
+import { ModelOption, Page, Query, Transaction } from './typings'
 
 const DefaultPageRows = 20, MaxPageRows = 1000
 const DefaultMS = 30 * 24 * 3600 * 1000
@@ -61,7 +61,7 @@ export class MysqlNative<Scheme> {
   }
 
   // 插入
-  async insert (data: SafePartial<Scheme>, trx?: Transaction) {
+  async insert (data: Partial<Scheme>, trx?: Transaction) {
     // 设置主键ID
     const id = (data as any)[this.key] as string || await this.newId()
     // 设置时间数据
@@ -73,7 +73,7 @@ export class MysqlNative<Scheme> {
   }
 
   // 批量插入
-  async mInsert (dataList: SafePartial<Scheme>[], trx?: Transaction) {
+  async mInsert (dataList: Partial<Scheme>[], trx?: Transaction) {
     const time = _.now()
     const values = [] as any[]
     const ids = [] as string[]
@@ -91,14 +91,14 @@ export class MysqlNative<Scheme> {
   }
 
   // 通过ID更新
-  async updateById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
+  async updateById (id: string, data: Partial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
     const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     return result || 0
   }
 
   // 通过查询条件更新
-  async updateByIdQuery (id: string, query: Query, data: SafePartial<Scheme>, trx?: Transaction) {
+  async updateByIdQuery (id: string, query: Query, data: Partial<Scheme>, trx?: Transaction) {
     _.defaults(data, { updated: _.now() })
     const qb = this.table(trx).where({ [this.key]: id })
     query(qb)
@@ -107,12 +107,13 @@ export class MysqlNative<Scheme> {
   }
 
   // 通过ID更新或插入
-  async upsertById (id: string, data: SafePartial<Scheme>, trx?: Transaction) {
+  async upsertById (id: string, data: Partial<Scheme>, trx?: Transaction) {
     const time = _.now()
     _.defaults(data, { updated: time })
     const result = await this.table(trx).where({ [this.key]: id }).update(this.fill(data))
     if (result === 0) {
       _.defaults(data, { [this.key]: id, created: time })
+      const a = this.fill(data, true)
       await this.table(trx).insert(this.fill(data, true))
     }
     return result
@@ -241,18 +242,17 @@ export class MysqlNative<Scheme> {
   }
 
   // 更新和插入数据库之前处理数据
-  protected fill<T> (data: T, insert = false) {
-    const result = data as any
+  protected fill (data: any, insert = false) {
     // 当为insert的时候填满数据
     insert && _.defaults(data, this.scheme)
     // 处理json
     this.jsons.forEach(k => {
-      if (typeof result[k] === 'object')
-        result[k] = JSON.stringify(result[k])
+      if (typeof data[k] === 'object')
+        data[k] = JSON.stringify(data[k])
     })
     this.virtual.forEach(k => {
-      delete result[k]
+      delete data[k]
     })
-    return result as T
+    return data
   }
 }
