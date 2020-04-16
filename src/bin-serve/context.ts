@@ -1,4 +1,5 @@
 import { $, _, Context, echo, secure, Session } from '..'
+import { ContextFailError } from '../coa-die'
 import { JsonState } from './libs/JsonState'
 
 export default {
@@ -66,19 +67,16 @@ export default {
     this.body = { code: 200, body, state }
   },
 
-  jsonFail (this: Context, message = 'Error', code = 400, mark = 0) {
+  jsonFail (this: Context, message = '未知错误', code: number = 400, mark: string | number = 0) {
     this.body = { code, mark, message }
     echo.warn('# 请求: %s %s %j', this.method, this.url, this.request.body)
     echo.warn('# 返回: %j', this.body)
   },
 
-  jsonAnyFail (this: Context, e: any) {
-    if (e.name === 'ContextOk') {
-      e.type === 'json' ? this.jsonOk(e.body) : this.htmlOk(e.body)
-    } else if (e.name === 'ContextFailError') {
-      const info = e.info || {}
-      info.tips || echo.error(e.stack || e.toString() || '')
-      this.jsonFail(info.message || '未知错误', info.code || 400, info.mark)
+  jsonAnyFail (this: Context, e: ContextFailError) {
+    if (e.name === 'ContextFailError') {
+      e.stdout && echo.error(e.stack || e.toString() || '')
+      this.jsonFail(e.message, e.code, e.mark)
     } else {
       this.jsonFail(e.toString(), 500)
       echo.error(e.stack || e.toString() || '')
