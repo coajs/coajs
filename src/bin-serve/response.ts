@@ -4,8 +4,8 @@ import { Context } from '..'
 export default () => async (ctx: Context, next: () => Promise<void>) => {
   try {
     await next()
-    // 如果内容为空，且上级应用没有接管respond
-    if (ctx.respond && !ctx.response.body) {
+    // 如果内容为空，且上级应用没有接管respond，只能判断respond !== false
+    if (ctx.respond !== false && !ctx.response.body) {
       // 判断是否是下载文件
       const download_filename = ctx.state['aac-file-down-name']
       if (download_filename) {

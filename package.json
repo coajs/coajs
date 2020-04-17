@@ -1,6 +1,6 @@
 {
   "name": "coajs",
-  "version": "1.0.112",
+  "version": "1.0.114",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "fast-glob": "^3.2.2",
     "hashids": "1",
     "ioredis": "^4.16.2",
-    "knex": "^0.20.14",
+    "knex": "^0.20.15",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-morgan": "^1.0.1",
