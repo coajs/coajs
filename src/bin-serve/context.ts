@@ -1,11 +1,11 @@
-import { $, _, Context, echo, secure, Session } from '..'
-import { ContextFailError } from '../coa-die'
+import { _, CoaContextError, Context, echo, secure, Session } from '..'
+import bin from './bin'
 import { JsonState } from './libs/JsonState'
 
 export default {
 
-  get session (this: Context) {
-    const ctx = this
+  get session () {
+    const ctx = this as Context
     return {
       get (name: string) {
         const session_name = 'aac-session-store-' + name
@@ -27,9 +27,10 @@ export default {
     return new JsonState()
   },
 
-  get realOrigin (this: Context) {
-    const protocol = this.header['x-client-scheme'] || this.header['x-scheme'] || this.protocol
-    const host = this.header['ali-swift-stat-host'] || this.host.replace(':8081', '')
+  get realOrigin () {
+    const that = this as Context
+    const protocol = that.header['x-client-scheme'] || that.header['x-scheme'] || that.protocol
+    const host = that.header['ali-swift-stat-host'] || that.host.replace(':8081', '')
     return protocol + '://' + host
   },
 
@@ -49,11 +50,11 @@ export default {
   },
 
   required<T> (this: Context, id: string, value: T) {
-    return $.checkParam(id, value, this.getParam(id), true)
+    return bin.checkParam(id, value, this.getParam(id), true)
   },
 
   have<T> (this: Context, id: string, value: T) {
-    return $.checkParam(id, value, this.getParam(id), false)
+    return bin.checkParam(id, value, this.getParam(id), false)
   },
 
   page (this: Context) {
@@ -73,8 +74,8 @@ export default {
     echo.warn('# 返回: %j', this.body)
   },
 
-  jsonAnyFail (this: Context, e: ContextFailError) {
-    if (e.name === 'ContextFailError') {
+  jsonAnyFail (this: Context, e: CoaContextError) {
+    if (e.name === 'CoaContextError') {
       e.stdout && echo.error(e.stack || e.toString() || '')
       this.jsonFail(e.message, e.code, e.mark)
     } else {
