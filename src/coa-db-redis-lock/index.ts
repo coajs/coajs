@@ -15,11 +15,11 @@ class Lock {
   }
 
   async lock () {
-    return await redis.set(this.id, this.value, 'PX', this.ms, 'NX')
+    return await redis.io.set(this.id, this.value, 'PX', this.ms, 'NX')
   }
 
   async unlock () {
-    return await redis.get(this.id) === this.value ? await redis.del(this.id) : -1
+    return await redis.io.get(this.id) === this.value ? await redis.io.del(this.id) : -1
   }
 
 }

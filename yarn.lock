@@ -380,6 +380,13 @@ coa-echo@^1.0.6:
   resolved "https://registry.npmjs.org/coa-echo/-/coa-echo-1.0.6.tgz#b6d391e6e6c20705519bb0e1e85937e9aae38a99"
   integrity sha512-awaIUKpaMxAlgFPcLM4VBRUHHcDqsAfdR547/ncQwo+9CXdnN75mJJUme/0kMuhfxVmhVM2dIvd3JkNWovYcCg==
 
+coa-env@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/coa-env/-/coa-env-1.0.2.tgz#fe8de04b88a53503b92c904bbb7de49aa72f704e"
+  integrity sha512-H6Ozw3WpB+cCxzNmvZgx2sHf/e0fMxanCKqT7z9tzLRm/A3MSa9hYbHf9N03yTCOFCrFid4seELsN9s0yQnMJg==
+  dependencies:
+    extend2 "^1.0.0"
+
 coa-error@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/coa-error/-/coa-error-1.0.1.tgz#e20a0ee9fc58a01b4135d7679eb9651af1df6144"
@@ -387,12 +394,13 @@ coa-error@^1.0.1:
   dependencies:
     coa-echo "^1.0.6"
 
-coa-helper@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/coa-helper/-/coa-helper-1.0.3.tgz#9b77060a2ae641272555458eae5bacfd095bcc29"
-  integrity sha512-1AQBe6JPwdbjR6kKqXlTU7nEugKWF0WqX549s8zUFA99jSPhnlyugVAR0wD3YmdyGdcjjNOn5ZyJcudDFmIvYA==
+coa-helper@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/coa-helper/-/coa-helper-1.0.4.tgz#ea68e4d4295bd0abe8052c59b41befd5ae19d2f1"
+  integrity sha512-7gPLl/oKQ+XQDjCqSL4uYl0usap8zuD/Y7BQXKytZHHnI3tgvLKpKKKvmjcF/c72Yspl9vY0D3AEWIR0FcUXeA==
   dependencies:
     "@types/lodash" "^4.14.152"
+    axios "^0.19.2"
     dayjs "^1.8.27"
     hashids "^2.2.1"
     lodash "^4.17.15"
@@ -624,6 +632,11 @@ extend-shallow@^3.0.0, extend-shallow@^3.0.2:
   dependencies:
     assign-symbols "^1.0.0"
     is-extendable "^1.0.1"
+
+extend2@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/extend2/-/extend2-1.0.0.tgz#0425a989b4dac2a486a32257f5140103756a7a3c"
+  integrity sha1-BCWpibTawqSGoyJX9RQBA3Vqejw=
 
 extend@^3.0.0:
   version "3.0.2"

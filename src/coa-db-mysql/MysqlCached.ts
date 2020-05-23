@@ -1,4 +1,4 @@
-import { _, cache, DataSet, Dic, die, MysqlNative, secure } from '..'
+import { _, cache, Dic, die, MysqlNative, secure } from '..'
 import { Page, Query, SafePartial, Transaction } from './typings'
 
 export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
@@ -112,7 +112,7 @@ export class MysqlCached<Scheme> extends MysqlNative<Scheme> {
     return this.name + ':' + nsp.join(':')
   }
 
-  protected cacheFinger (data: DataSet, ...data2: DataSet[]) {
+  protected cacheFinger (data: Dic<any>, ...data2: Dic<any>[]) {
     let arr1 = [] as string[], arr2 = [] as string[]
     _.forEach(_.pickBy(data), (v, k) => {
       const val = typeof v === 'object' ? JSON.stringify(v) : v

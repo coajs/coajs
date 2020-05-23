@@ -153,7 +153,7 @@ export class MysqlNative<Scheme> {
 
   // 获取table对象
   table (trx?: Transaction) {
-    const table = mysql<Scheme>(this.name)
+    const table = mysql.io<Scheme>(this.name)
     this.database && table.withSchema(this.database)
     trx && table.transacting(trx)
     return table

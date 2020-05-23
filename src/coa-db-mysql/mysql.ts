@@ -23,4 +23,4 @@ env.mysql.trace && mysql.on('query', (data: any) => {
   env.started && echo.grey('* SQL: %s', mysql.raw(data.sql, data.bindings).toString())
 })
 
-export default mysql
+export default { io: mysql }

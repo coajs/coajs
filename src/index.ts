@@ -3,18 +3,15 @@ require('source-map-support/register')
 // 类型声明
 export * from './typings'
 
-// 常用工具
-export * as axios from 'axios'
-export * as BigNumber from 'bignumber.js'
-
 // 系统工具
-export * from 'coa-echo'
-export * from 'coa-error'
-export * from 'coa-secure'
-export * from 'coa-helper'
+export { echo } from 'coa-echo'
+export { env, Env } from 'coa-env'
+export { die, CoaContextError } from 'coa-error'
+export { secure } from 'coa-secure'
+export { $, _, helper, lodash, dayjs, axios, Axios, HashIds } from 'coa-helper'
 
 // core相关
-export { default as env } from './coa-env'
+export { default as data } from './data'
 
 // 数据库相关
 export { default as redis } from './coa-db-redis/redis'

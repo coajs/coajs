@@ -11,7 +11,7 @@ export class Cron {
   // 尝试触发
   async try () {
     const deadline = _.now()
-    const start = _.toInteger(await redis.getset(key_cron_last, deadline)) || (deadline - 1000)
+    const start = _.toInteger(await redis.io.getset(key_cron_last, deadline)) || (deadline - 1000)
     _.forEach(this.jobs, ({ time }, name) => {
       const next = new CronTime(time, { start, deadline }).next()
       if (next) this.onJob(name)

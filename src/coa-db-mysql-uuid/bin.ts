@@ -7,7 +7,7 @@ export default new class {
   // 生成新的唯一顺序码
   async newSeries (id: string) {
     if (!env.mysql.host) return 0
-    return await mysql.transaction(async trx => {
+    return await mysql.io.transaction(async trx => {
       const data = await trx(tableName).first('no').where({ id }).forUpdate() || {}
       const no = _.toInteger(data.no) + 1
       if (no === 1)
@@ -23,7 +23,7 @@ export default new class {
     const id = this.getDailyId(day)
     const series = await this.newSeries(id)
     // 如果为1，则删除以前的旧数据
-    if (series === 1) await mysql(tableName).delete()
+    if (series === 1) await mysql.io(tableName).delete()
       .where('id', 'LIKE', 'ID%')
       .where('id', '<', this.getDailyId(day - 3))
     return series

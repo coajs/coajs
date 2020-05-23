@@ -1,4 +1,4 @@
-import HashIds from 'hashids'
+import { HashIds } from 'coa-helper'
 import { _, uuid } from '..'
 import bin from './bin'
 

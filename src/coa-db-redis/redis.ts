@@ -15,4 +15,4 @@ env.redis.trace && redis.monitor((err, monitor) => {
   })
 })
 
-export default redis
+export default { io: redis }

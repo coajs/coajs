@@ -15,6 +15,4 @@ export interface Context extends ContextExtend, Koa.Context {
   params: { [index: string]: string },
 }
 
-export interface ContextExt extends Context {}
-
 export type Apps = Dic<Dic<string>>

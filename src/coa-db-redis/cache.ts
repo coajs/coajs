@@ -17,7 +17,7 @@ export default new class {
     ms > 0 || die.hint('cache hash ms 必须大于0')
     const expire = _.now() + ms
     const data = this.encode(value, expire)
-    return await redis.hset(this.key(nsp), id, data)
+    return await redis.io.hset(this.key(nsp), id, data)
   }
 
   // 批量设置
@@ -27,18 +27,18 @@ export default new class {
     const expire = _.now() + ms
     const data = {} as Dic<any>
     _.forEach(values, (v, k) => data[k] = this.encode(v, expire))
-    return await redis.hmset(this.key(nsp), data)
+    return await redis.io.hmset(this.key(nsp), data)
   }
 
   // 获取
   async get (nsp: string, id: string) {
-    const ret = await redis.hget(this.key(nsp), id) || ''
+    const ret = await redis.io.hget(this.key(nsp), id) || ''
     return this.decode(ret, _.now())
   }
 
   // 批量获取
   async mGet (nsp: string, ids: string[]) {
-    const ret = await redis.hmget(this.key(nsp), ...ids)
+    const ret = await redis.io.hmget(this.key(nsp), ...ids)
     const result = {} as Dic<any>
     const time = _.now()
     _.forEach(ids, (id, i) => result[id] = this.decode(ret[i], time))
@@ -79,9 +79,9 @@ export default new class {
   // 删除
   async delete (nsp: string, ids: string[] = []) {
     if (ids.length)
-      return await redis.hdel(this.key(nsp), ...ids)
+      return await redis.io.hdel(this.key(nsp), ...ids)
     else
-      return await redis.del(this.key(nsp))
+      return await redis.io.del(this.key(nsp))
   }
 
   // 删除
@@ -91,7 +91,7 @@ export default new class {
     else if (deleteIds.length === 1)
       return await this.delete(...deleteIds[0])
 
-    const pipeline = redis.pipeline()
+    const pipeline = redis.io.pipeline()
     deleteIds.forEach(([nsp, ids]) => {
       ids.length ? pipeline.hdel(this.key(nsp), ...ids) : pipeline.del(this.key(nsp))
     })
@@ -101,23 +101,23 @@ export default new class {
   // 清除无效的缓存
   async clearUseless () {
     const now = _.now()
-    const keys1 = await redis.keys(this.key('*'))
+    const keys1 = await redis.io.keys(this.key('*'))
     for (const i1 in keys1) {
       const key1 = keys1[i1]
-      const keys2 = await redis.hkeys(key1) as string[]
+      const keys2 = await redis.io.hkeys(key1) as string[]
       for (const i2 in keys2) {
         const key2 = keys2[i2]
-        const value = await redis.hget(key1, key2) || ''
+        const value = await redis.io.hget(key1, key2) || ''
         const expire = _.toInteger(value.substr(1, 13))
-        if (expire < now) await redis.hdel(key1, key2)
+        if (expire < now) await redis.io.hdel(key1, key2)
       }
     }
   }
 
   // 清楚指定命名空间的缓存
   async clear (nsp: string = '') {
-    const keys = await redis.keys(this.key(nsp + '*'))
-    return keys.length ? await redis.del(...keys) : 0
+    const keys = await redis.io.keys(this.key(nsp + '*'))
+    return keys.length ? await redis.io.del(...keys) : 0
   }
 
   // 设置nsp
